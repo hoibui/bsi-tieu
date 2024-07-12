@@ -1000,7 +1000,7 @@ NN_FRAMEWORK.Others = function () {
      * Author: levantoan.com
      */
     var zalo_acc = {
-        '0989589115': '16r2lq8fu0wqb',
+        '0989589115': '0989589115',
     };
 
     function devvnCheckLinkAvailability(link, successCallback, errorCallback) {
