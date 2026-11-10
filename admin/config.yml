@@ -103,3 +103,9 @@ collections:
               - {label: Giờ, name: time, widget: string, hint: 'Ví dụ: 17:00 - 20:00 hoặc Nghỉ'}
           - {label: Ghi chú ngắn, name: note, widget: string, required: false}
           - {label: Lịch khám chi tiết (cập nhật hàng tháng), name: body, widget: markdown, required: false}
+      - label: Khám thai kỳ
+        name: kham-thai-ki
+        file: content/pages/kham-thai-ki.md
+        fields:
+          - {label: Tiêu đề trang, name: title, widget: string, default: 'Khám thai kỳ'}
+          - {label: Nội dung, name: body, widget: markdown}

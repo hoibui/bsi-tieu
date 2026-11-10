@@ -32,3 +32,11 @@
 
     .scrollToTop {bottom: 72px; right: 12px;}
 }
+
+/* Trang văn bản do CMS tạo (vd. Khám thai kỳ) */
+.text-page {text-align: center;}
+.text-page__body {max-width: 720px; margin: 0 auto 20px; text-align: left;}
+.text-page .schedule-cta {display: flex; justify-content: center; margin: 10px 0 30px;}
+
+/* Cuộn tới thẻ chuyên khoa không bị header che */
+.service__item[id] {scroll-margin-top: 140px;}
