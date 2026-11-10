@@ -68,13 +68,13 @@ export function loadPosts(dir = POSTS_DIR) {
 
 export function listItem(post) {
     const t = escHtml(post.title);
-    const img = post.thumbnail || 'thumbs/480x320x2/assets/images/noimage.png';
+    const img = post.thumbnail || 'assets/images/noimage.svg';
     return `                    <div class="news__item col-md-6">
                         <div class="form-row">
                             <a class="news__photo col-lg-5" href="${post.slug}" title="${t}">
                                 <figure class="news__photo-inner scale-img">
                                     <img alt="${t}" class="lazy w-100" data-src="${escHtml(img)}"
-                                         onerror="this.src='thumbs/480x320x2/assets/images/noimage.png';"/>
+                                         onerror="this.onerror=null;this.src='assets/images/noimage.svg';"/>
                                 </figure>
                             </a>
                             <div class="news__info col-lg-7">
