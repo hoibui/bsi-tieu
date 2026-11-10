@@ -98,6 +98,7 @@ export function updateList(html, posts) {
 // Hand-written pages whose main content is edited in the CMS (content/pages/<name>.md, front matter only).
 export const PAGES = [
     {data: 'content/pages/gia-dich-vu.md', file: 'gia-dich-vu.html', render: renderPriceTable},
+    {data: 'content/pages/lich-kham.md', file: 'lich-kham.html', render: renderSchedule},
 ];
 
 export function renderPriceTable(d) {
@@ -123,6 +124,21 @@ ${rows}
         </div>`;
 }
 
+export function renderSchedule(d, bodyHtml = '') {
+    const hours = (d.hours || []).map((h) => `                <li><span>${escHtml(h.day)}</span><strong>${escHtml(h.time)}</strong></li>`).join('\n');
+    return `<div class="schedule-page">
+            <div class="main__title">
+                <h2>${escHtml(d.title || 'Lịch khám')}</h2>
+            </div>
+            <ul class="schedule-hours">
+${hours}
+            </ul>${d.note ? `\n            <p class="schedule-note">${escHtml(d.note)}</p>` : ''}${bodyHtml ? `\n            <div class="schedule-body ckeditor">${bodyHtml}</div>` : ''}
+            <div class="schedule-cta">
+                <a class="menu__btn home__btn --font-bold --bg-infra-red transition" href="https://zalo.me/0989589115" target="_blank">Đặt lịch hẹn</a>
+            </div>
+        </div>`;
+}
+
 export function updatePage(html, content) {
     const a = html.indexOf(PAGE_START), b = html.indexOf(PAGE_END);
     if (a < 0 || b < a) throw new Error(`page is missing ${PAGE_START} / ${PAGE_END} markers`);
@@ -133,9 +149,10 @@ export function buildPages(root = ROOT, pages = PAGES) {
     for (const pg of pages) {
         const dataFile = path.join(root, pg.data);
         if (!fs.existsSync(dataFile)) continue;
-        const {data} = matter(fs.readFileSync(dataFile, 'utf8'));
+        const {data, content} = matter(fs.readFileSync(dataFile, 'utf8'));
+        const bodyHtml = content.trim() ? marked.parse(content, {gfm: true, breaks: false}) : '';
         const file = path.join(root, pg.file);
-        fs.writeFileSync(file, updatePage(fs.readFileSync(file, 'utf8'), pg.render(data)));
+        fs.writeFileSync(file, updatePage(fs.readFileSync(file, 'utf8'), pg.render(data, bodyHtml)));
     }
 }
 

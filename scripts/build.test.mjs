@@ -18,7 +18,8 @@ function sandbox(posts, stories = {}) {
     fs.copyFileSync(path.join(REPO, 'cau-chuyen.html'), path.join(root, 'cau-chuyen.html'));
     fs.copyFileSync(path.join(REPO, 'gia-dich-vu.html'), path.join(root, 'gia-dich-vu.html'));
     fs.mkdirSync(path.join(root, 'content/pages'), {recursive: true});
-    fs.copyFileSync(path.join(REPO, 'content/pages/gia-dich-vu.md'), path.join(root, 'content/pages/gia-dich-vu.md'));
+    for (const n of ['gia-dich-vu', 'lich-kham']) fs.copyFileSync(path.join(REPO, `content/pages/${n}.md`), path.join(root, `content/pages/${n}.md`));
+    fs.copyFileSync(path.join(REPO, 'lich-kham.html'), path.join(root, 'lich-kham.html'));
     for (const [name, text] of Object.entries(posts)) fs.writeFileSync(path.join(root, 'content/posts', name), text);
     for (const [name, text] of Object.entries(stories)) fs.writeFileSync(path.join(root, 'content/stories', name), text);
     return root;
@@ -134,4 +135,19 @@ test('committed gia-dich-vu.html matches the committed content file', () => {
     const before = fs.readFileSync(path.join(root, 'gia-dich-vu.html'), 'utf8');
     build({root});
     assert.equal(fs.readFileSync(path.join(root, 'gia-dich-vu.html'), 'utf8'), before);
+});
+
+test('schedule page renders hours, escaped note and markdown body; committed HTML is in sync', () => {
+    const root = sandbox({});
+    const before = fs.readFileSync(path.join(root, 'lich-kham.html'), 'utf8');
+    build({root});
+    assert.equal(fs.readFileSync(path.join(root, 'lich-kham.html'), 'utf8'), before);
+    fs.writeFileSync(path.join(root, 'content/pages/lich-kham.md'),
+        `---\ntitle: Lịch\nhours:\n  - day: T2\n    time: "17:00"\nnote: "<b>x</b>"\n---\n**Tháng 12**\n`);
+    build({root});
+    const html = fs.readFileSync(path.join(root, 'lich-kham.html'), 'utf8');
+    assert.match(html, /<li><span>T2<\/span><strong>17:00<\/strong><\/li>/);
+    assert.match(html, /&lt;b&gt;x&lt;\/b&gt;/);
+    assert.match(html, /<strong>Tháng 12<\/strong>/);
+    assert.doesNotMatch(html, /id="booking-form"/);
 });

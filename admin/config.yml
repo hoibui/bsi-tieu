@@ -89,3 +89,17 @@ collections:
             fields:
               - {label: Dịch vụ, name: service, widget: string}
               - {label: Giá, name: price, widget: string, hint: 'Ví dụ: 150,000'}
+      - label: Lịch khám
+        name: lich-kham
+        file: content/pages/lich-kham.md
+        fields:
+          - {label: Tiêu đề trang, name: title, widget: string, default: 'Lịch khám'}
+          - label: Giờ làm việc
+            name: hours
+            widget: list
+            summary: '{{fields.day}}: {{fields.time}}'
+            fields:
+              - {label: Ngày, name: day, widget: string, hint: 'Ví dụ: Thứ 2 - Thứ 6'}
+              - {label: Giờ, name: time, widget: string, hint: 'Ví dụ: 17:00 - 20:00 hoặc Nghỉ'}
+          - {label: Ghi chú ngắn, name: note, widget: string, required: false}
+          - {label: Lịch khám chi tiết (cập nhật hàng tháng), name: body, widget: markdown, required: false}
