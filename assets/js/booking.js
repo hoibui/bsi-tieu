@@ -1,6 +1,6 @@
 // Đặt lịch hẹn: gửi form tới Google Apps Script (xem docs/booking-apps-script.gs)
 // Sau khi deploy Apps Script, dán URL "Web app" vào BOOKING_ENDPOINT.
-var BOOKING_ENDPOINT = '';
+var BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwJOJjgfCpyZno-SKszlcJG0Ixd2bTPX4d-8_kC4A4jhVZLVeY1v55UDy1Rl51Czumg/exec';
 
 $(function () {
     var $form = $('#booking-form');
