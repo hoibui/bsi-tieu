@@ -17,6 +17,8 @@ export const SECTIONS = [
     {dir: 'content/stories', listFile: 'cau-chuyen.html', name: 'Câu chuyện', href: 'cau-chuyen'},
 ];
 const MARK = '<!-- generated-by: scripts/build.mjs -->';
+const PAGE_START = '<!-- PAGE:START -->';
+const PAGE_END = '<!-- PAGE:END -->';
 const LIST_START = '<!-- POSTS:START -->';
 const LIST_END = '<!-- POSTS:END -->';
 
@@ -93,6 +95,50 @@ export function updateList(html, posts) {
     return html.slice(0, a + LIST_START.length) + '\n' + (items ? items + '\n' : '') + '                    ' + html.slice(b);
 }
 
+// Hand-written pages whose main content is edited in the CMS (content/pages/<name>.md, front matter only).
+export const PAGES = [
+    {data: 'content/pages/gia-dich-vu.md', file: 'gia-dich-vu.html', render: renderPriceTable},
+];
+
+export function renderPriceTable(d) {
+    const rows = (d.rows || []).map((r) => `                <tr>
+                    <td>${escHtml(r.service)}</td>
+                    <td>${escHtml(r.price)}</td>
+                </tr>`).join('\n');
+    return `<div class="price-page">
+            <div class="main__title">
+                <h2>${escHtml(d.title || 'Bảng Giá Dịch Vụ')}</h2>
+            </div>
+            <table class="price-table">
+                <thead>
+                <tr>
+                    <th>${escHtml(d.service_header || 'Dịch vụ')}</th>
+                    <th>${escHtml(d.price_header || 'Giá (VNĐ)')}</th>
+                </tr>
+                </thead>
+                <tbody>
+${rows}
+                </tbody>
+            </table>
+        </div>`;
+}
+
+export function updatePage(html, content) {
+    const a = html.indexOf(PAGE_START), b = html.indexOf(PAGE_END);
+    if (a < 0 || b < a) throw new Error(`page is missing ${PAGE_START} / ${PAGE_END} markers`);
+    return html.slice(0, a + PAGE_START.length) + '\n        ' + content + '\n        ' + html.slice(b);
+}
+
+export function buildPages(root = ROOT, pages = PAGES) {
+    for (const pg of pages) {
+        const dataFile = path.join(root, pg.data);
+        if (!fs.existsSync(dataFile)) continue;
+        const {data} = matter(fs.readFileSync(dataFile, 'utf8'));
+        const file = path.join(root, pg.file);
+        fs.writeFileSync(file, updatePage(fs.readFileSync(file, 'utf8'), pg.render(data)));
+    }
+}
+
 export function build({root = ROOT, sections = SECTIONS} = {}) {
     const template = fs.readFileSync(path.join(root, 'templates/article.html'), 'utf8');
     const all = [];
@@ -122,6 +168,7 @@ export function build({root = ROOT, sections = SECTIONS} = {}) {
         fs.writeFileSync(listFile, updateList(fs.readFileSync(listFile, 'utf8'), posts));
         all.push(...posts);
     }
+    buildPages(root);
     return all;
 }
 

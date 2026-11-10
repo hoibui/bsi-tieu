@@ -1,0 +1,36 @@
+---
+title: Bảng Giá Dịch Vụ
+service_header: Dịch vụ
+price_header: Giá (VNĐ)
+rows:
+  - service: "Khám thai / Phụ khoa"
+    price: "150,000"
+  - service: "Khám ưu tiên theo khung giờ"
+    price: "200,000"
+  - service: "Tư vấn hiếm muộn"
+    price: "150,000"
+  - service: "Siêu âm thai nhỏ"
+    price: "150,000"
+  - service: "Siêu âm đầu dò âm đạo"
+    price: "150,000"
+  - service: "Siêu âm 2D"
+    price: "150,000"
+  - service: "Siêu âm đo độ mờ da gáy"
+    price: "200,000"
+  - service: "Siêu âm đo chiều dài kênh cổ tử cung"
+    price: "100,000"
+  - service: "Siêu âm 3D"
+    price: "350,000"
+  - service: "Siêu âm 4D"
+    price: "450,000"
+  - service: "Siêu âm tim thai"
+    price: "450,000"
+  - service: "Siêu âm hình thái"
+    price: "450,000"
+  - service: "Siêu âm doppler màu"
+    price: "250,000"
+  - service: "Cấy que tránh thai"
+    price: "2,500,000"
+  - service: "Đặt vòng nâng cổ tử cung"
+    price: "2,500,000"
+---
