@@ -3,7 +3,7 @@ backend:
   repo: hoibui/bsi-tieu
   branch: main
   # URL of the OAuth proxy (Cloudflare Worker). See docs/article-posting.md.
-  base_url: https://REPLACE-ME.workers.dev
+  base_url: https://sveltia-cms-auth.athoibuiqt.workers.dev
   commit_messages:
     create: 'Đăng bài: {{slug}}'
     update: 'Sửa bài: {{slug}}'
