@@ -1,5 +1,4 @@
 // Đặt lịch hẹn: gửi form tới Google Apps Script (xem docs/booking-apps-script.gs)
-// - Trang /lich-kham: form có sẵn (#booking-form).
 // - Mọi trang: bấm nút "Đặt lịch hẹn" sẽ mở popup có cùng form. Nếu JS lỗi, nút vẫn mở Zalo như cũ.
 var BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwJOJjgfCpyZno-SKszlcJG0Ixd2bTPX4d-8_kC4A4jhVZLVeY1v55UDy1Rl51Czumg/exec';
 
@@ -12,9 +11,32 @@ $(function () {
         return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     }
 
+    // Giờ khám theo ngày (khớp "Giờ làm việc" trên trang chủ): T2-T6 17:00-20:00, T7-CN 08:00-11:00.
+    // Nếu đổi giờ làm việc, sửa ở đây.
+    function slotsFor(dateStr) {
+        if (!dateStr) return null;
+        var day = new Date(dateStr + 'T00:00:00').getDay(); // 0 = Chủ nhật, 6 = Thứ 7
+        return (day === 0 || day === 6)
+            ? ['08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00']
+            : ['17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00'];
+    }
+
+    function refreshTimes($form) {
+        var slots = slotsFor($form.find('input[name=date]').val());
+        var $sel = $form.find('select[name=time]').empty();
+        if (!slots) {
+            $sel.append($('<option>').val('').text('-- Chọn ngày khám trước --'));
+            return;
+        }
+        $sel.append($('<option>').val('').text('-- Chọn giờ --'));
+        slots.forEach(function (t) { $sel.append($('<option>').text(t)); });
+    }
+
     // Gắn xử lý gửi cho một form đặt lịch; onDone() chạy sau khi gửi thành công.
     function bindForm($form, onDone) {
-        $form.find('input[name=date]').attr('min', todayStr());
+        $form.find('input[name=date]').attr('min', todayStr()).on('change', function () { refreshTimes($form); });
+        $form.on('reset', function () { setTimeout(function () { refreshTimes($form); }, 0); });
+        refreshTimes($form);
         $form.on('submit', function (e) {
             e.preventDefault();
             var f = this.elements;
@@ -57,10 +79,6 @@ $(function () {
         });
     }
 
-    // Form có sẵn ở trang /lich-kham
-    var $pageForm = $('#booking-form');
-    if ($pageForm.length) bindForm($pageForm);
-
     // ---- Popup ----
     var css = '.bk-overlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;' +
         'background:rgba(0,0,0,.55);padding:16px;overflow-y:auto}' +
@@ -87,7 +105,7 @@ $(function () {
         '<div class="booking-row"><label for="bkp-phone">Số điện thoại *</label><input type="tel" id="bkp-phone" name="phone" required maxlength="15" inputmode="tel"></div>' +
         '<div class="booking-row"><label for="bkp-date">Ngày khám mong muốn *</label><input type="date" id="bkp-date" name="date" required></div>' +
         '<div class="booking-row"><label for="bkp-time">Giờ khám mong muốn *</label><select id="bkp-time" name="time" required>' +
-        '<option value="">-- Chọn giờ --</option><option>Buổi sáng (8:00 - 12:00)</option><option>Buổi chiều (13:00 - 17:00)</option><option>Buổi tối (17:00 - 20:00)</option></select></div>' +
+        '</select></div>' +
         '<div class="booking-row"><label for="bkp-service">Dịch vụ</label><select id="bkp-service" name="service">' +
         '<option>Khám thai</option><option>Khám phụ khoa</option><option>Tư vấn hiếm muộn / IVF</option><option>Khác</option></select></div>' +
         '<div class="booking-row"><label for="bkp-note">Ghi chú</label><textarea id="bkp-note" name="note" rows="3" maxlength="500"></textarea></div>' +

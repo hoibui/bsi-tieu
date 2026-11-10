@@ -234,17 +234,6 @@
             </div>
         </section>
     </header>
-    <style>
-        .booking-form { max-width: 560px; margin: 20px auto 0; position: relative; }
-        .booking-note { margin-bottom: 16px; }
-        .booking-row { margin-bottom: 14px; }
-        .booking-row label { display: block; font-weight: 600; margin-bottom: 4px; }
-        .booking-row input, .booking-row select, .booking-row textarea {
-            width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font: inherit; }
-        .booking-submit { padding: 12px 28px; border: 0; border-radius: 6px; background: #e0457b;
-            color: #fff; font-weight: 600; cursor: pointer; }
-        .booking-submit:disabled { opacity: .6; cursor: wait; }
-    </style>
     <main id="main-primary">
         <div class="breadCrumbs top-space">
             <div class="wrap-content">
@@ -268,50 +257,32 @@
             </div>
         </div>
         <div class="wrap-main">
+            <style>
+                .schedule-page {text-align: center;}
+                .schedule-hours {list-style: none; margin: 0 auto 24px; padding: 0; max-width: 520px;}
+                .schedule-hours li {display: flex; justify-content: space-between; gap: 16px; padding: 10px 14px; border-bottom: 1px solid #e3e3e3;}
+                .schedule-hours li:first-child {border-top: 1px solid #e3e3e3;}
+                .schedule-note, .schedule-body {max-width: 720px; margin: 0 auto 20px; text-align: center;}
+                .schedule-cta {display: flex; justify-content: center; margin: 10px 0 30px;}
+            </style>
+            <!-- PAGE:START -->
+        <div class="schedule-page">
             <div class="main__title">
                 <h2>Lịch khám</h2>
             </div>
-            <form id="booking-form" class="booking-form" novalidate>
-                <p class="booking-note">Vui lòng điền thông tin, phòng khám sẽ liên hệ xác nhận lịch hẹn với bạn.</p>
-                <div class="booking-row">
-                    <label for="bk-name">Họ và tên *</label>
-                    <input type="text" id="bk-name" name="name" required maxlength="100">
-                </div>
-                <div class="booking-row">
-                    <label for="bk-phone">Số điện thoại *</label>
-                    <input type="tel" id="bk-phone" name="phone" required maxlength="15" inputmode="tel">
-                </div>
-                <div class="booking-row">
-                    <label for="bk-date">Ngày khám mong muốn *</label>
-                    <input type="date" id="bk-date" name="date" required>
-                </div>
-                <div class="booking-row">
-                    <label for="bk-time">Giờ khám mong muốn *</label>
-                    <select id="bk-time" name="time" required>
-                        <option value="">-- Chọn giờ --</option>
-                        <option>Buổi sáng (8:00 - 12:00)</option>
-                        <option>Buổi chiều (13:00 - 17:00)</option>
-                        <option>Buổi tối (17:00 - 20:00)</option>
-                    </select>
-                </div>
-                <div class="booking-row">
-                    <label for="bk-service">Dịch vụ</label>
-                    <select id="bk-service" name="service">
-                        <option>Khám thai</option>
-                        <option>Khám phụ khoa</option>
-                        <option>Tư vấn hiếm muộn / IVF</option>
-                        <option>Khác</option>
-                    </select>
-                </div>
-                <div class="booking-row">
-                    <label for="bk-note">Ghi chú</label>
-                    <textarea id="bk-note" name="note" rows="3" maxlength="500"></textarea>
-                </div>
-                <!-- honeypot chống spam: người thật sẽ không thấy ô này -->
-                <input type="text" name="website" tabindex="-1" autocomplete="off"
-                       style="position:absolute;left:-9999px" aria-hidden="true">
-                <button type="submit" class="booking-submit">Đặt lịch hẹn</button>
-            </form>
+            <ul class="schedule-hours">
+                <li><span>Thứ 2 - Thứ 6</span><strong>17:00 - 20:00</strong></li>
+                <li><span>Thứ 7 - Chủ Nhật</span><strong>08:00 - 11:00</strong></li>
+                <li><span>Ngày lễ</span><strong>Nghỉ</strong></li>
+            </ul>
+            <p class="schedule-note">Lịch có thể thay đổi hàng tháng. Vui lòng xem lịch cập nhật bên dưới.</p>
+            <div class="schedule-body ckeditor"><p><strong>Lịch khám tháng này sẽ được cập nhật sớm nhất có thể.</strong></p>
+</div>
+            <div class="schedule-cta">
+                <a class="menu__btn home__btn --font-bold --bg-infra-red transition" href="https://zalo.me/0989589115" target="_blank">Đặt lịch hẹn</a>
+            </div>
+        </div>
+        <!-- PAGE:END -->
         </div>
     </main>
     <footer id="footer-primary">
