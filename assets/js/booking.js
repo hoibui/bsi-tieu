@@ -1,6 +1,6 @@
 // Đặt lịch hẹn: gửi form tới Google Apps Script (xem docs/booking-apps-script.gs)
 // - Mọi trang: bấm nút "Đặt lịch hẹn" sẽ mở popup có cùng form. Nếu JS lỗi, nút vẫn mở Zalo như cũ.
-var BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwJOJjgfCpyZno-SKszlcJG0Ixd2bTPX4d-8_kC4A4jhVZLVeY1v55UDy1Rl51Czumg/exec';
+var BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx7fFMBSoPLDnL8k4K9rMzwa48iSWbMWx-rHblR-Lxx5ytspFzq5lTnTELCxdfUTX7J/exec';
 
 // Các nút có chữ này sẽ mở popup đặt lịch thay vì mở Zalo
 var BOOKING_LABELS = ['đặt lịch hẹn', 'đăng ký khám'];
