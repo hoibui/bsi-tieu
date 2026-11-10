@@ -11,6 +11,11 @@ import {marked} from 'marked';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ORIGIN = 'https://phantrungtieu.com';
 const POSTS_DIR = path.join(ROOT, 'content/posts');
+// Each section reads Markdown from `dir` and lists its posts in `listFile` (between the POSTS markers).
+export const SECTIONS = [
+    {dir: 'content/posts', listFile: 'kien-thuc.html', name: 'Kiến thức', href: 'kien-thuc'},
+    {dir: 'content/stories', listFile: 'cau-chuyen.html', name: 'Câu chuyện', href: 'cau-chuyen'},
+];
 const MARK = '<!-- generated-by: scripts/build.mjs -->';
 const LIST_START = '<!-- POSTS:START -->';
 const LIST_END = '<!-- POSTS:END -->';
@@ -88,32 +93,36 @@ export function updateList(html, posts) {
     return html.slice(0, a + LIST_START.length) + '\n' + (items ? items + '\n' : '') + '                    ' + html.slice(b);
 }
 
-export function build({root = ROOT, postsDir = POSTS_DIR} = {}) {
+export function build({root = ROOT, sections = SECTIONS} = {}) {
     const template = fs.readFileSync(path.join(root, 'templates/article.html'), 'utf8');
-    const posts = loadPosts(postsDir);
-
+    const all = [];
     const seen = new Set();
-    for (const p of posts) {
-        if (seen.has(p.slug)) throw new Error(`Duplicate slug ${p.slug}`);
-        seen.add(p.slug);
-        const out = path.join(root, `${p.slug}.html`);
-        if (fs.existsSync(out) && !fs.readFileSync(out, 'utf8').includes(MARK)) {
-            throw new Error(`Post "${p.slug}" would overwrite the existing page ${p.slug}.html. Rename the post.`);
-        }
-        const {display, iso} = formatDate(p.date);
-        const image = p.thumbnail ? `${ORIGIN}/${p.thumbnail.replace(/^\/+/, '')}` : '';
-        const page = render(template, {
-            title: escHtml(p.title), titleJson: jsonSafe(p.title),
-            description: escHtml(p.description), descriptionJson: jsonSafe(p.description),
-            slug: p.slug, origin: ORIGIN, image: escHtml(image), imageJson: jsonSafe(image),
-            dateDisplay: display, dateIso: iso, body: p.body,
-        });
-        fs.writeFileSync(out, page.replace('<!DOCTYPE html>', `<!DOCTYPE html>\n${MARK}`));
-    }
 
-    const listFile = path.join(root, 'kien-thuc.html');
-    fs.writeFileSync(listFile, updateList(fs.readFileSync(listFile, 'utf8'), posts));
-    return posts;
+    for (const section of sections) {
+        const posts = loadPosts(path.join(root, section.dir));
+        for (const p of posts) {
+            if (seen.has(p.slug)) throw new Error(`Duplicate slug ${p.slug} (slugs must be unique across all sections)`);
+            seen.add(p.slug);
+            const out = path.join(root, `${p.slug}.html`);
+            if (fs.existsSync(out) && !fs.readFileSync(out, 'utf8').includes(MARK)) {
+                throw new Error(`Post "${p.slug}" would overwrite the existing page ${p.slug}.html. Rename the post.`);
+            }
+            const {display, iso} = formatDate(p.date);
+            const image = p.thumbnail ? `${ORIGIN}/${p.thumbnail.replace(/^\/+/, '')}` : '';
+            const page = render(template, {
+                title: escHtml(p.title), titleJson: jsonSafe(p.title),
+                description: escHtml(p.description), descriptionJson: jsonSafe(p.description),
+                slug: p.slug, origin: ORIGIN, image: escHtml(image), imageJson: jsonSafe(image),
+                dateDisplay: display, dateIso: iso, body: p.body,
+                sectionName: escHtml(section.name), sectionNameJson: jsonSafe(section.name), sectionHref: section.href,
+            });
+            fs.writeFileSync(out, page.replace('<!DOCTYPE html>', `<!DOCTYPE html>\n${MARK}`));
+        }
+        const listFile = path.join(root, section.listFile);
+        fs.writeFileSync(listFile, updateList(fs.readFileSync(listFile, 'utf8'), posts));
+        all.push(...posts);
+    }
+    return all;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

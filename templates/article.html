@@ -241,7 +241,7 @@
             <div class="wrap-content">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a class="text-decoration-none" href=""><span>Trang chủ</span></a></li>
-                    <li class="breadcrumb-item "><a class="text-decoration-none" href="kien-thuc"><span>Kiến thức</span></a>
+                    <li class="breadcrumb-item "><a class="text-decoration-none" href="{{sectionHref}}"><span>{{sectionName}}</span></a>
                     </li>
                     <li class="breadcrumb-item active"><a class="text-decoration-none"
                                                           href="{{slug}}"><span>{{title}}</span></a>
@@ -251,7 +251,7 @@
                     "@context": "https://schema.org",
                     "@type": "BreadcrumbList",
                     "itemListElement": [
-                        {"@type": "ListItem", "position": 1, "name": "Kiến thức", "item": "{{origin}}/kien-thuc"},
+                        {"@type": "ListItem", "position": 1, "name": {{sectionNameJson}}, "item": "{{origin}}/{{sectionHref}}"},
                         {"@type": "ListItem", "position": 2, "name": {{titleJson}}, "item": "{{origin}}/{{slug}}"}
                     ]
                 }</script>
