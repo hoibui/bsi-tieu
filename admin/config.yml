@@ -1,0 +1,49 @@
+backend:
+  name: github
+  repo: hoibui/bsi-tieu
+  branch: main
+  # URL of the OAuth proxy (Cloudflare Worker). See docs/article-posting.md.
+  base_url: https://REPLACE-ME.workers.dev
+  commit_messages:
+    create: 'Đăng bài: {{slug}}'
+    update: 'Sửa bài: {{slug}}'
+    delete: 'Xóa bài: {{slug}}'
+    uploadMedia: 'Tải ảnh: {{path}}'
+    deleteMedia: 'Xóa ảnh: {{path}}'
+
+locale: vi
+site_url: https://phantrungtieu.com
+display_url: https://phantrungtieu.com
+
+media_folder: upload/news
+public_folder: upload/news
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: '-'
+
+collections:
+  - name: posts
+    label: Bài viết (Kiến thức)
+    label_singular: Bài viết
+    folder: content/posts
+    extension: md
+    create: true
+    delete: true
+    slug: '{{slug}}'
+    summary: '{{title}} - {{date}}'
+    sortable_fields: ['date', 'title']
+    fields:
+      - {label: Tiêu đề, name: title, widget: string}
+      - label: Ngày đăng
+        name: date
+        widget: datetime
+        format: 'YYYY-MM-DDTHH:mm:ssZ'
+        date_format: 'DD/MM/YYYY'
+        time_format: 'HH:mm'
+        picker_utc: false
+      - {label: Ảnh đại diện, name: thumbnail, widget: image, required: false}
+      - {label: Mô tả ngắn, name: description, widget: text, required: false, hint: 'Hiển thị ở danh sách bài viết và Google. Để trống sẽ tự lấy từ nội dung.'}
+      - {label: Ẩn bài (nháp), name: draft, widget: boolean, default: false, required: false}
+      - {label: Nội dung, name: body, widget: markdown}
