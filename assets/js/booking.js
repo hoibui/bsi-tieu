@@ -3,6 +3,9 @@
 // - Mọi trang: bấm nút "Đặt lịch hẹn" sẽ mở popup có cùng form. Nếu JS lỗi, nút vẫn mở Zalo như cũ.
 var BOOKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwJOJjgfCpyZno-SKszlcJG0Ixd2bTPX4d-8_kC4A4jhVZLVeY1v55UDy1Rl51Czumg/exec';
 
+// Các nút có chữ này sẽ mở popup đặt lịch thay vì mở Zalo
+var BOOKING_LABELS = ['đặt lịch hẹn', 'đăng ký khám'];
+
 $(function () {
     function todayStr() {
         var d = new Date();
@@ -114,7 +117,7 @@ $(function () {
     // Dùng capture để chặn trước các handler redirect Zalo gắn trực tiếp trong apps.js.
     document.addEventListener('click', function (e) {
         var a = e.target.closest && e.target.closest('a.home__btn');
-        if (!a || a.textContent.replace(/\s+/g, ' ').trim().toLowerCase() !== 'đặt lịch hẹn') return;
+        if (!a || BOOKING_LABELS.indexOf(a.textContent.replace(/\s+/g, ' ').trim().toLowerCase()) < 0) return;
         e.preventDefault();
         e.stopPropagation();
         openPopup();
