@@ -151,3 +151,22 @@ test('schedule page renders hours, escaped note and markdown body; committed HTM
     assert.match(html, /<strong>Tháng 12<\/strong>/);
     assert.doesNotMatch(html, /id="booking-form"/);
 });
+
+test('search index covers pages and posts, skips list pages, strips tags and scripts', () => {
+    const root = sandbox({'bai-moi.md': `---\ntitle: Bài về phụ khoa\ndate: 2026-01-01T00:00:00+07:00\n---\nNội dung **khám phụ khoa** định kỳ.\n`});
+    fs.writeFileSync(path.join(root, 'index.html'), '<main><p>home</p></main>');
+    fs.writeFileSync(path.join(root, 'tim-kiem.html'), '<main><p>x</p></main>');
+    fs.writeFileSync(path.join(root, 'trang-khac.html'),
+        '<title>T</title><main><div class="wrap-main"><div class="main__title"><h2>Giới &amp; thiệu</h2></div><script>var secret=1</script><p>Xin chào&nbsp;bạn</p></div></main>');
+    build({root});
+    const idx = JSON.parse(fs.readFileSync(path.join(root, 'search-index.json'), 'utf8'));
+    const urls = idx.map((e) => e.url);
+    assert.ok(urls.includes('bai-moi') && urls.includes('trang-khac') && urls.includes('gia-dich-vu'));
+    for (const skip of ['index', 'tim-kiem', 'kien-thuc', 'cau-chuyen']) assert.ok(!urls.includes(skip), skip);
+    const e = idx.find((x) => x.url === 'trang-khac');
+    assert.equal(e.title, 'Giới & thiệu');
+    assert.ok(!e.text.includes('secret') && !e.text.includes('<'));
+    assert.match(e.text, /Xin chào bạn/);
+    assert.ok(!e.text.includes('wrap-main'));
+    assert.equal(idx.find((x) => x.url === 'bai-moi').title, 'Bài về phụ khoa');
+});

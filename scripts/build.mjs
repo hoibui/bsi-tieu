@@ -156,6 +156,35 @@ export function buildPages(root = ROOT, pages = PAGES) {
     }
 }
 
+// ---- Search index (search-index.json), used by tim-kiem.html ----
+const SEARCH_SKIP = new Set(['tim-kiem', 'kien-thuc', 'cau-chuyen', 'index']);
+
+const decodeEntities = (t) => t.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+
+export function extractSearchEntry(html, slug) {
+    // Một số trang không có thẻ <main>: lấy từ wrap-main đến footer.
+    const main = (html.match(/<main[\s\S]*?<\/main>/i) || html.match(/class="wrap-main"[\s\S]*?(?=<footer)/i) || [''])[0];
+    const wrap = main.includes('class="wrap-main"') ? main.slice(main.indexOf('class="wrap-main"')).replace(/^[^>]*>/, '') : main;
+    const body = decodeEntities(wrap.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+    const h2 = html.match(/<div class="main__title">\s*<h2>([\s\S]*?)<\/h2>/i) || html.match(/<h2[^>]*>([\s\S]*?)<\/h2>/i);
+    const t = html.match(/<title>([\s\S]*?)<\/title>/i);
+    const title = decodeEntities(((h2 && h2[1]) || (t && t[1]) || slug).replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+    return {url: slug, title, text: body.slice(0, 4000)};
+}
+
+export function buildSearchIndex(root = ROOT) {
+    const entries = [];
+    for (const f of fs.readdirSync(root).filter((n) => n.endsWith('.html')).sort()) {
+        const slug = f.replace(/\.html$/, '');
+        if (SEARCH_SKIP.has(slug)) continue;
+        const e = extractSearchEntry(fs.readFileSync(path.join(root, f), 'utf8'), slug);
+        if (e.text) entries.push(e);
+    }
+    fs.writeFileSync(path.join(root, 'search-index.json'), JSON.stringify(entries));
+    return entries;
+}
+
 export function build({root = ROOT, sections = SECTIONS} = {}) {
     const template = fs.readFileSync(path.join(root, 'templates/article.html'), 'utf8');
     const all = [];
@@ -186,6 +215,7 @@ export function build({root = ROOT, sections = SECTIONS} = {}) {
         all.push(...posts);
     }
     buildPages(root);
+    buildSearchIndex(root);
     return all;
 }
 
