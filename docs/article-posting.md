@@ -7,6 +7,19 @@ Decap lưu bài thành file Markdown trong `content/posts/` (commit vào `main`)
 
 Các trang cũ (`omega-3-co-tac-dung-gi.html`, ...) không bị đụng tới. Chỉ bài mới đi qua build.
 
+## Hai mục: Kiến thức và Câu chuyện
+
+Trong admin có hai mục:
+
+| Mục trong admin | Thư mục | Danh sách hiển thị ở |
+|---|---|---|
+| Bài viết (Kiến thức) | `content/posts/` | `kien-thuc.html` |
+| Câu chuyện | `content/stories/` | `cau-chuyen.html` |
+
+Cả hai dùng chung một mẫu trang và cách viết bài. Tên bài (slug) phải khác nhau giữa hai mục.
+Muốn thêm mục mới: thêm một collection vào `admin/config.yml`, một dòng vào `SECTIONS` trong
+`scripts/build.mjs`, và thêm cặp `<!-- POSTS:START -->` / `<!-- POSTS:END -->` vào trang danh sách.
+
 ## Cài đặt một lần
 
 Decap cần một "OAuth proxy" để đăng nhập GitHub (GitHub Pages không có server). Dùng Cloudflare Worker miễn phí.
