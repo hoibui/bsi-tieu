@@ -110,10 +110,13 @@ $(function () {
     $overlay.find('.bk-close').on('click', closePopup);
     $(document).on('keydown', function (e) { if (e.key === 'Escape' && $overlay.hasClass('open')) closePopup(); });
 
-    // Nút "Đặt lịch hẹn" (đầu trang + menu mobile) -> mở popup
-    $(document).on('click', 'a.home__btn', function (e) {
-        if ($.trim($(this).text()).replace(/\s+/g, ' ').toLowerCase() !== 'đặt lịch hẹn') return;
+    // Nút "Đặt lịch hẹn" (đầu trang + menu mobile) -> mở popup.
+    // Dùng capture để chặn trước các handler redirect Zalo gắn trực tiếp trong apps.js.
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a.home__btn');
+        if (!a || a.textContent.replace(/\s+/g, ' ').trim().toLowerCase() !== 'đặt lịch hẹn') return;
         e.preventDefault();
+        e.stopPropagation();
         openPopup();
-    });
+    }, true);
 });
