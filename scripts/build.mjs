@@ -99,6 +99,7 @@ export function updateList(html, posts) {
 export const PAGES = [
     {data: 'content/pages/gia-dich-vu.md', file: 'gia-dich-vu.html', render: renderPriceTable},
     {data: 'content/pages/lich-kham.md', file: 'lich-kham.html', render: renderSchedule},
+    {data: 'content/pages/kham-thai-ki.md', file: 'kham-thai-ki.html', render: renderTextPage},
 ];
 
 export function renderPriceTable(d) {
@@ -121,6 +122,18 @@ export function renderPriceTable(d) {
 ${rows}
                 </tbody>
             </table>
+        </div>`;
+}
+
+export function renderTextPage(d, bodyHtml = '') {
+    return `<div class="text-page">
+            <div class="main__title">
+                <h2>${escHtml(d.title || '')}</h2>
+            </div>
+            <div class="text-page__body ckeditor">${bodyHtml}</div>
+            <div class="schedule-cta">
+                <a class="menu__btn home__btn --font-bold --bg-infra-red transition" href="https://zalo.me/0989589115" target="_blank">Đặt lịch hẹn</a>
+            </div>
         </div>`;
 }
 

@@ -18,8 +18,9 @@ function sandbox(posts, stories = {}) {
     fs.copyFileSync(path.join(REPO, 'cau-chuyen.html'), path.join(root, 'cau-chuyen.html'));
     fs.copyFileSync(path.join(REPO, 'gia-dich-vu.html'), path.join(root, 'gia-dich-vu.html'));
     fs.mkdirSync(path.join(root, 'content/pages'), {recursive: true});
-    for (const n of ['gia-dich-vu', 'lich-kham']) fs.copyFileSync(path.join(REPO, `content/pages/${n}.md`), path.join(root, `content/pages/${n}.md`));
+    for (const n of ['gia-dich-vu', 'lich-kham', 'kham-thai-ki']) fs.copyFileSync(path.join(REPO, `content/pages/${n}.md`), path.join(root, `content/pages/${n}.md`));
     fs.copyFileSync(path.join(REPO, 'lich-kham.html'), path.join(root, 'lich-kham.html'));
+    fs.copyFileSync(path.join(REPO, 'kham-thai-ki.html'), path.join(root, 'kham-thai-ki.html'));
     for (const [name, text] of Object.entries(posts)) fs.writeFileSync(path.join(root, 'content/posts', name), text);
     for (const [name, text] of Object.entries(stories)) fs.writeFileSync(path.join(root, 'content/stories', name), text);
     return root;
@@ -169,4 +170,29 @@ test('search index covers pages and posts, skips list pages, strips tags and scr
     assert.match(e.text, /Xin chào bạn/);
     assert.ok(!e.text.includes('wrap-main'));
     assert.equal(idx.find((x) => x.url === 'bai-moi').title, 'Bài về phụ khoa');
+});
+
+test('kham-thai-ki page is rendered from its content file and matches the committed HTML', () => {
+    const root = sandbox({});
+    const before = fs.readFileSync(path.join(root, 'kham-thai-ki.html'), 'utf8');
+    build({root});
+    const after = fs.readFileSync(path.join(root, 'kham-thai-ki.html'), 'utf8');
+    assert.equal(after, before);
+    assert.match(after, /<h2>Khám thai kỳ<\/h2>/);
+    assert.match(after, /<li>Khám kiểm tra thai<\/li>/);
+    assert.doesNotMatch(after, /Không tìm thấy kết quả/);
+});
+
+test('no internal link points to a page that does not exist', () => {
+    const pages = new Set(fs.readdirSync(REPO).filter((f) => f.endsWith('.html')).map((f) => f.replace(/\.html$/, '')));
+    const bad = [];
+    for (const f of [...pages].map((p) => `${p}.html`)) {
+        const html = fs.readFileSync(path.join(REPO, f), 'utf8');
+        for (const m of html.matchAll(/<a [^>]*?href="([^"#?]*)/g)) {
+            const h = m[1].replace(/^\.\//, '').replace(/\.html$/, '');
+            if (!h || /^(https?:|mailto:|tel:|javascript:|zalo:)/.test(m[1])) continue;
+            if (!pages.has(h) && !fs.existsSync(path.join(REPO, h))) bad.push(`${f} -> ${m[1]}`);
+        }
+    }
+    assert.deepEqual([...new Set(bad)], []);
 });
