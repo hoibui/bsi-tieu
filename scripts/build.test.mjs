@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {build, escHtml, formatDate, jsonSafe, updateList} from './build.mjs';
+import {build, escHtml, formatDate, jsonSafe, updateList, renderPriceTable} from './build.mjs';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -16,6 +16,9 @@ function sandbox(posts, stories = {}) {
     fs.copyFileSync(path.join(REPO, 'templates/article.html'), path.join(root, 'templates/article.html'));
     fs.copyFileSync(path.join(REPO, 'kien-thuc.html'), path.join(root, 'kien-thuc.html'));
     fs.copyFileSync(path.join(REPO, 'cau-chuyen.html'), path.join(root, 'cau-chuyen.html'));
+    fs.copyFileSync(path.join(REPO, 'gia-dich-vu.html'), path.join(root, 'gia-dich-vu.html'));
+    fs.mkdirSync(path.join(root, 'content/pages'), {recursive: true});
+    fs.copyFileSync(path.join(REPO, 'content/pages/gia-dich-vu.md'), path.join(root, 'content/pages/gia-dich-vu.md'));
     for (const [name, text] of Object.entries(posts)) fs.writeFileSync(path.join(root, 'content/posts', name), text);
     for (const [name, text] of Object.entries(stories)) fs.writeFileSync(path.join(root, 'content/stories', name), text);
     return root;
@@ -112,4 +115,23 @@ test('helpers', () => {
     assert.equal(escHtml(`<a href="x">&'`), '&lt;a href=&quot;x&quot;&gt;&amp;&#39;');
     assert.equal(jsonSafe('</script>'), '"\\u003c/script\\u003e"');
     assert.deepEqual(formatDate(new Date('2023-04-25T18:03:00+07:00')), {display: '25/04/2023 06:03 PM', iso: '2023-04-25'});
+});
+
+test('price page is rendered from content/pages and is idempotent and escaped', () => {
+    const root = sandbox({});
+    fs.writeFileSync(path.join(root, 'content/pages/gia-dich-vu.md'),
+        `---\ntitle: Giá\nrows:\n  - service: "A <b>x</b>"\n    price: "1,000"\n---\n`);
+    build({root});
+    const once = fs.readFileSync(path.join(root, 'gia-dich-vu.html'), 'utf8');
+    assert.match(once, /<td>A &lt;b&gt;x&lt;\/b&gt;<\/td>\s*<td>1,000<\/td>/);
+    assert.equal(once.split('<tr>').length - 1, 2); // header + 1 row
+    build({root});
+    assert.equal(fs.readFileSync(path.join(root, 'gia-dich-vu.html'), 'utf8'), once);
+});
+
+test('committed gia-dich-vu.html matches the committed content file', () => {
+    const root = sandbox({});
+    const before = fs.readFileSync(path.join(root, 'gia-dich-vu.html'), 'utf8');
+    build({root});
+    assert.equal(fs.readFileSync(path.join(root, 'gia-dich-vu.html'), 'utf8'), before);
 });

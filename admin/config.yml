@@ -71,3 +71,21 @@ collections:
       - {label: Mô tả ngắn, name: description, widget: text, required: false, hint: 'Hiển thị ở danh sách bài viết và Google. Để trống sẽ tự lấy từ nội dung.'}
       - {label: Ẩn bài (nháp), name: draft, widget: boolean, default: false, required: false}
       - {label: Nội dung, name: body, widget: markdown}
+
+  - name: pages
+    label: Trang
+    files:
+      - label: Bảng giá dịch vụ
+        name: gia-dich-vu
+        file: content/pages/gia-dich-vu.md
+        fields:
+          - {label: Tiêu đề trang, name: title, widget: string, default: 'Bảng Giá Dịch Vụ'}
+          - {label: Tiêu đề cột 1, name: service_header, widget: string, default: 'Dịch vụ'}
+          - {label: Tiêu đề cột 2, name: price_header, widget: string, default: 'Giá (VNĐ)'}
+          - label: Danh sách dịch vụ
+            name: rows
+            widget: list
+            summary: '{{fields.service}} - {{fields.price}}'
+            fields:
+              - {label: Dịch vụ, name: service, widget: string}
+              - {label: Giá, name: price, widget: string, hint: 'Ví dụ: 150,000'}
