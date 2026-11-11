@@ -118,3 +118,14 @@ body {-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;}
 .slideshow__photo-inner img {margin-top: -3.4%; margin-bottom: -1.26%;}
 
 .footer__header {margin-bottom: .8rem;}
+
+/* Trang chủ: khối đặt lịch/liên hệ và kiến thức sức khỏe */
+.home-contact {text-align: center;}
+.home-contact__lead {max-width: 640px; margin: 0 auto 20px;}
+.home-contact__actions {display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 16px;}
+.home-contact__alt {background: #fff; color: var(--color-web-tone-infra-red, #eb3c93); border: 1px solid currentColor;}
+.home-contact__hours {margin: 0; font-size: 15px;}
+.home-news__more {text-align: center; margin: 24px 0 0;}
+@media (max-width: 575px) {
+    .home-contact__actions .home__btn {flex: 1 1 100%; justify-content: center;}
+}
