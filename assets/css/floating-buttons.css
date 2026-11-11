@@ -40,3 +40,81 @@
 
 /* Cuộn tới thẻ chuyên khoa không bị header che */
 .service__item[id] {scroll-margin-top: 140px;}
+
+/* Chân trang gọn hơn: giảm khoảng đệm/khoảng cách để khu vực phía trên bản đồ bớt cao */
+.footer--top.mgt-50 {margin-top: 30px;}
+.footer--top .footer-article.pd-50 {padding: 25px 0;}
+.footer__header {margin-bottom: 1rem;}
+.footer__title {margin-bottom: .6rem;}
+.footer__info:not(:last-child) {margin-bottom: 8px;}
+.footer__ul li:not(:last-child) {margin-bottom: 6px;}
+.footer__open-time ul li:not(:last-child) {padding-bottom: .3rem; margin-bottom: .3rem;}
+.footer-powered {padding: 12px 0;}
+
+/* Cột Fanpage (khung Facebook) thường rất cao: giới hạn chiều cao để chân trang không bị kéo dài */
+#fanpage-facebook {max-height: 220px; overflow: hidden;}
+.footer__header--left img {max-height: 60px; width: auto;}
+
+/* ===== Làm mới giao diện (giữ tông hồng thương hiệu) ===== */
+
+/* Hồng đậm hơn một chút để chữ trắng trên nền hồng / chữ hồng trên nền trắng đạt tương phản WCAG AA (>= 4.5:1) */
+:root {--color-web-tone-infra-red: #d41f7b; --color-web-tone-dark-powder-blue: #d41f7b; --color-btn-frame: #d41f7b;}
+
+/* Tiêu đề và giờ mở cửa ở chân trang: màu xanh cyan trên nền hồng gần như không đọc được (1.8:1) -> trắng */
+.footer__title {color: #fff; padding-bottom: .2rem; border-bottom: 1px solid rgba(255, 255, 255, .45); margin-bottom: .4rem; letter-spacing: .02em;}
+.footer__open-time ul li p:nth-child(2) {color: #fff;}
+.footer__open-time ul li:not(:last-child) {border-bottom-color: rgba(255, 255, 255, .45);}
+
+/* Liên kết chân trang: vùng chạm lớn hơn nhưng tổng chiều cao gần như giữ nguyên */
+.footer__ul li:not(:last-child) {margin-bottom: 0;}
+.footer__ul li a {display: inline-block; padding: 1px 0;}
+
+/* Trạng thái focus bàn phím rõ ràng */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+    outline: 3px solid #0b63ce; outline-offset: 2px;
+}
+#footer-primary a:focus-visible, .btn-frame:focus-visible, .home__btn:focus-visible {outline-color: #fff; box-shadow: 0 0 0 5px #0b63ce;}
+
+/* Nút: bo góc nhẹ, chuyển động mượt, phản hồi khi nhấn */
+.home__btn {border-radius: 4px; transition: background-color .2s, color .2s, box-shadow .2s, transform .1s;}
+.home__btn:active {transform: translateY(1px);}
+
+/* Thẻ chuyên khoa: bo góc và bóng nhẹ, nổi lên khi rê chuột */
+.service__item {border-radius: 8px; transition: box-shadow .2s, transform .2s;}
+.service__item:hover {box-shadow: 0 8px 24px rgba(0, 0, 0, .08);}
+
+/* Ảnh không tràn khung, chữ dễ đọc hơn */
+img {max-width: 100%;}
+body {-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;}
+
+/* Màn hình cảm ứng: vùng chạm tối thiểu ~44px cho liên kết chân trang và mạng xã hội */
+@media (pointer: coarse) {
+    .footer__ul li a {padding: 10px 0;}
+    .footer__social a, .footer__header .social a {min-width: 44px; min-height: 44px;}
+}
+
+/* Tôn trọng người dùng tắt hiệu ứng chuyển động */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important;}
+}
+
+/* Logo (khối hồng) bám sát mép trái màn hình: bỏ phần bù thanh cuộn khiến lệch 8px (máy tính) / 15px (điện thoại) */
+.menu .logo:before {left: -100vw;}
+
+/* Điện thoại: chân trang gọn hơn */
+@media (max-width: 767px) {
+    .footer--top.mgt-50 {margin-top: 20px;}
+    .footer--top .footer-article.pd-50 {padding: 18px 0;}
+    .footer__header {margin-bottom: .6rem;}
+    .footer-article__inner > div[class^="footer-article-"]:not(:last-child) {margin-bottom: 14px;}
+    /* Dịch vụ: 2 cột x 2 hàng thay vì 4 hàng */
+    .footer-article--2 .footer__ul {display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px;}
+    /* Hiệu ứng trượt vào của slide đầu trang làm slide lệch khung: tắt trên điện thoại */
+    .slideshow [owl-item-animation] {animation: none !important;}
+}
+
+/* Banner đầu trang: ảnh gốc có viền đen ở trên/dưới; cắt viền (27px/796 và 10px/796 chiều rộng ảnh) */
+.slideshow__photo-inner {overflow: hidden; margin: 0;}
+.slideshow__photo-inner img {margin-top: -3.4%; margin-bottom: -1.26%;}
+
+.footer__header {margin-bottom: .8rem;}
