@@ -11,5 +11,16 @@
 <script src="https://unpkg.com/decap-cms@3.17.3/dist/decap-cms.js"
         integrity="sha384-RWRzuHfiZSWCt3nEvG7B0v3cMgM1C2UuJmgBSL92GQh4uXmNSkbcthql/mNBqvjr"
         crossorigin="anonymous"></script>
+<script>
+    // Login button reads "Đăng nhập" (no "bằng GitHub", no GitHub icon).
+    // registerLocale replaces the whole phrase set, so merge into the built-in Vietnamese one.
+    (function () {
+        var vi = CMS.getLocale('vi');
+        if (vi) CMS.registerLocale('vi', Object.assign({}, vi, {auth: Object.assign({}, vi.auth, {loginWithGitHub: 'Đăng nhập'})}));
+    })();
+</script>
+<style>
+    [class*="LoginButtonIcon"] {display: none !important}
+</style>
 </body>
 </html>
