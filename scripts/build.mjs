@@ -13,11 +13,23 @@ const ORIGIN = 'https://phantrungtieu.com';
 const POSTS_DIR = path.join(ROOT, 'content/posts');
 // Each section reads Markdown from `dir` and lists its posts in `listFile` (between the POSTS markers).
 export const SECTIONS = [
-    {dir: 'content/posts', listFile: 'kien-thuc.html', name: 'Kiến thức', href: 'kien-thuc'},
-    {dir: 'content/stories', listFile: 'cau-chuyen.html', name: 'Câu chuyện', href: 'cau-chuyen',
-        // A story with `category: <key>` is also listed on that category's page (it stays on the section list too).
-        categories: [{key: 'chuyen-di-sinh', listFile: 'chuyen-di-sinh.html'}]},
+    {dir: 'content/posts', listFile: 'kien-thuc.html', name: 'Kiến thức', href: 'kien-thuc',
+        // A post with `category: <key>` is also listed on that category's page (it stays on the section list too).
+        categories: [
+            {key: 'tam-ca-nguyet-1', listFile: 'tam-ca-nguyet-1.html'},
+            {key: 'tam-ca-nguyet-2', listFile: 'tam-ca-nguyet-2.html'},
+            {key: 'tam-ca-nguyet-3', listFile: 'tam-ca-nguyet-3.html'},
+            {key: 'nhap-vien', listFile: 'nhap-vien.html'},
+            {key: 'nam-vien', listFile: 'nam-vien.html'},
+            {key: 'sau-sanh', listFile: 'sau-sanh.html'},
+            {key: 'phu-khoa', listFile: 'phu-khoa.html'},
+            {key: 'hiem-muon', listFile: 'hiem-muon.html'},
+        ]},
+    {dir: 'content/stories', listFile: 'chuyen-di-sinh.html', name: 'Chuyện đi sinh', href: 'chuyen-di-sinh'},
+    {dir: 'content/news', listFile: 'tin-tuc.html', name: 'Tin tức', href: 'tin-tuc', ticker: {file: 'index.html', max: 5}},
 ];
+const TICKER_START = '<!-- NEWS-TICKER:START -->';
+const TICKER_END = '<!-- NEWS-TICKER:END -->';
 const MARK = '<!-- generated-by: scripts/build.mjs -->';
 const PAGE_START = '<!-- PAGE:START -->';
 const PAGE_END = '<!-- PAGE:END -->';
@@ -97,6 +109,23 @@ export function updateList(html, posts) {
     return html.slice(0, a + LIST_START.length) + '\n' + (items ? items + '\n' : '') + '                    ' + html.slice(b);
 }
 
+// Scrolling strip with the newest news items, shown at the top of the home page.
+export function tickerHtml(posts, max = 5) {
+    const items = posts.slice(0, max).map((p) => `<a href="${p.slug}" title="${escHtml(p.title)}">${escHtml(p.title)}</a>`);
+    if (!items.length) return '';
+    return `<div class="news-ticker top-space" role="region" aria-label="Tin tức">
+            <b class="news-ticker__label">Tin tức</b>
+            <div class="news-ticker__track"><div class="news-ticker__inner">${items.join('')}</div></div>
+        </div>`;
+}
+
+export function updateTicker(html, posts, max) {
+    const a = html.indexOf(TICKER_START), b = html.indexOf(TICKER_END);
+    if (a < 0 || b < a) throw new Error(`home page is missing ${TICKER_START} / ${TICKER_END} markers`);
+    const t = tickerHtml(posts, max);
+    return html.slice(0, a + TICKER_START.length) + (t ? '\n        ' + t + '\n        ' : '') + html.slice(b);
+}
+
 // Hand-written pages whose main content is edited in the CMS (content/pages/<name>.md, front matter only).
 export const PAGES = [
     {data: 'content/pages/gia-dich-vu.md', file: 'gia-dich-vu.html', render: renderPriceTable},
@@ -172,7 +201,7 @@ export function buildPages(root = ROOT, pages = PAGES) {
 }
 
 // ---- Search index (search-index.json), used by tim-kiem.html ----
-const SEARCH_SKIP = new Set(['tim-kiem', 'kien-thuc', 'cau-chuyen', 'chuyen-di-sinh', 'index']);
+const SEARCH_SKIP = new Set(['tim-kiem', 'kien-thuc', 'chuyen-di-sinh', 'tin-tuc', 'index', ...SECTIONS.flatMap((x) => (x.categories || []).map((c) => c.key))]);
 
 const decodeEntities = (t) => t.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
@@ -230,6 +259,10 @@ export function build({root = ROOT, sections = SECTIONS} = {}) {
         for (const cat of section.categories || []) {
             const catFile = path.join(root, cat.listFile);
             fs.writeFileSync(catFile, updateList(fs.readFileSync(catFile, 'utf8'), posts.filter((p) => p.category === cat.key)));
+        }
+        if (section.ticker) {
+            const tf = path.join(root, section.ticker.file);
+            fs.writeFileSync(tf, updateTicker(fs.readFileSync(tf, 'utf8'), posts, section.ticker.max));
         }
         all.push(...posts);
     }

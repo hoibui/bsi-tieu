@@ -2,28 +2,33 @@
 
 Bác sĩ đăng nhập tại `https://phantrungtieu.com/admin/`, viết bài trong trình soạn thảo, bấm **Publish**.
 Decap lưu bài thành file Markdown trong `content/posts/` (commit vào `main`), GitHub Actions chạy
-`npm run build` để tạo trang `<slug>.html` và thêm bài vào danh sách ở `kien-thuc.html`, rồi deploy
+`npm run build` để tạo trang `<slug>.html` và thêm bài vào các trang danh sách (xem bảng dưới), rồi deploy
 (khoảng 1-2 phút).
 
 Các trang cũ (`omega-3-co-tac-dung-gi.html`, ...) không bị đụng tới. Chỉ bài mới đi qua build.
 
-## Hai mục: Kiến thức và Câu chuyện
+## Ba mục: Kiến thức, Chuyện đi sinh và Tin tức
 
-Trong admin có hai mục:
+Trong admin có ba mục bài viết:
 
 | Mục trong admin | Thư mục | Danh sách hiển thị ở |
 |---|---|---|
-| Bài viết (Kiến thức) | `content/posts/` | `kien-thuc.html` |
-| Câu chuyện | `content/stories/` | `cau-chuyen.html` |
+| Bài viết (Kiến thức) | `content/posts/` | `kien-thuc.html` (và trang chuyên mục) |
+| Chuyện đi sinh | `content/stories/` | `chuyen-di-sinh.html` |
+| Tin tức | `content/news/` | `tin-tuc.html` và dải tin ở đầu trang chủ |
 
-Cả hai dùng chung một mẫu trang và cách viết bài. Tên bài (slug) phải khác nhau giữa hai mục.
-Trong mục Câu chuyện, chọn **Chuyên mục = Chuyện đi sinh** để bài cũng hiện ở trang `chuyen-di-sinh`
-(menu Câu chuyện > Chuyện đi sinh); bài vẫn nằm trong danh sách chung của Câu chuyện. Muốn thêm chuyên mục khác:
-thêm lựa chọn vào trường `category` trong `admin/config.yml`, một mục vào `categories` của section trong
-`scripts/build.mjs`, tạo trang danh sách (sao từ `chuyen-di-sinh.html`) và thêm mục vào menu ở mọi trang.
+Cả ba dùng chung một mẫu trang và cách viết bài. Tên bài (slug) phải khác nhau giữa các mục.
 
-Muốn thêm mục mới: thêm một collection vào `admin/config.yml`, một dòng vào `SECTIONS` trong
-`scripts/build.mjs`, và thêm cặp `<!-- POSTS:START -->` / `<!-- POSTS:END -->` vào trang danh sách.
+- **Chuyên mục của Kiến thức:** khi viết bài Kiến thức, chọn **Chuyên mục** (Tam cá nguyệt 1/2/3, Nhập viện,
+  Nằm viện, Sau sanh, Phụ khoa, Hiếm muộn) để bài cũng hiện ở trang chuyên mục tương ứng
+  (menu Kiến thức > chuyên mục). Bài vẫn nằm trong danh sách chung `kien-thuc`.
+- **Dải tin ở trang chủ:** 5 tin mới nhất (không phải bài nháp) chạy ngang ở đầu trang chủ. Chưa có tin thì
+  dải này không hiện.
+- **Thêm chuyên mục Kiến thức:** thêm lựa chọn vào trường `category` trong `admin/config.yml`, một mục vào
+  `categories` của section Kiến thức trong `scripts/build.mjs`, tạo trang danh sách (sao từ một trang chuyên mục
+  như `phu-khoa.html`, đổi tên/đường dẫn) và thêm mục vào menu ở mọi trang.
+- **Thêm mục mới:** thêm một collection vào `admin/config.yml`, một dòng vào `SECTIONS` trong
+  `scripts/build.mjs`, và thêm cặp `<!-- POSTS:START -->` / `<!-- POSTS:END -->` vào trang danh sách.
 
 ## Cài đặt một lần
 
