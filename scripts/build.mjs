@@ -26,7 +26,7 @@ export const SECTIONS = [
             {key: 'hiem-muon', listFile: 'hiem-muon.html'},
         ]},
     {dir: 'content/stories', listFile: 'chuyen-di-sinh.html', name: 'Chuyện đi sinh', href: 'chuyen-di-sinh'},
-    {dir: 'content/news', listFile: 'tin-tuc.html', name: 'Tin tức', href: 'tin-tuc', ticker: {file: 'index.html', max: 5}, homeBlock: {file: 'index.html', max: 4, marker: 'HOME-NEWS', title: 'Tin tức', href: 'tin-tuc', more: 'Xem tất cả tin tức'}},
+    {dir: 'content/news', listFile: 'tin-tuc.html', name: 'Tin tức', href: 'tin-tuc', ticker: {file: 'index.html', max: 4}, homeBlock: {file: 'index.html', max: 4, marker: 'HOME-NEWS', title: 'Tin tức', href: 'tin-tuc', more: 'Xem tất cả tin tức'}},
 ];
 const TICKER_START = '<!-- NEWS-TICKER:START -->';
 const TICKER_END = '<!-- NEWS-TICKER:END -->';

@@ -22,7 +22,7 @@ Cả ba dùng chung một mẫu trang và cách viết bài. Tên bài (slug) ph
 - **Chuyên mục của Kiến thức:** khi viết bài Kiến thức, chọn **Chuyên mục** (Tam cá nguyệt 1/2/3, Nhập viện,
   Nằm viện, Sau sanh, Phụ khoa, Hiếm muộn) để bài cũng hiện ở trang chuyên mục tương ứng
   (menu Kiến thức > chuyên mục). Bài vẫn nằm trong danh sách chung `kien-thuc`.
-- **Dải tin ở trang chủ:** 5 tin mới nhất (không phải bài nháp) chạy ngang ở đầu trang chủ. Chưa có tin thì
+- **Dải tin ở trang chủ:** 4 tin mới nhất (không phải bài nháp) chạy ngang ở đầu trang chủ và hiện thành 4 thẻ ở khối Tin tức. Chưa có tin thì
   dải này không hiện.
 - **Thêm chuyên mục Kiến thức:** thêm lựa chọn vào trường `category` trong `admin/config.yml`, một mục vào
   `categories` của section Kiến thức trong `scripts/build.mjs`, tạo trang danh sách (sao từ một trang chuyên mục
