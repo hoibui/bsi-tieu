@@ -15,7 +15,6 @@ const POSTS_DIR = path.join(ROOT, 'content/posts');
 export const SECTIONS = [
     {dir: 'content/posts', listFile: 'kien-thuc.html', name: 'Kiến thức', href: 'kien-thuc',
         // A post with `category: <key>` is also listed on that category's page (it stays on the section list too).
-        homeBlock: {file: 'index.html', max: 4, marker: 'HOME-KNOWLEDGE', title: 'Kiến thức sức khỏe', href: 'kien-thuc', more: 'Xem tất cả bài viết'},
         categories: [
             {key: 'tam-ca-nguyet-1', listFile: 'tam-ca-nguyet-1.html'},
             {key: 'tam-ca-nguyet-2', listFile: 'tam-ca-nguyet-2.html'},

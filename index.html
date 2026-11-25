@@ -266,6 +266,17 @@
             .news-ticker a:hover{color:#e0457b}
             @keyframes news-ticker{to{transform:translateX(-100%)}}
             @media (prefers-reduced-motion:reduce){.news-ticker__track{overflow-x:auto}.news-ticker__inner{animation:none;padding-left:0}}
+            /* TikTok: căn giữa khối nhúng */
+            .tiktok-user .wrap-content{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+            .tiktok-user .tiktok-embed{margin-left:auto!important;margin-right:auto!important}
+            /* Đỡ sanh / mổ lấy thai: gọn hơn */
+            .intro.pd-50{padding:24px 0}
+            .intro__title{margin-bottom:.5rem}
+            .intro__title h2{padding-bottom:.3rem;margin-bottom:.4rem}
+            .intro__desc ul{margin:0;padding-left:1.25rem}
+            .intro__desc ul li:not(:last-child){margin-bottom:.15rem}
+            .intro__photo-inner img{max-height:260px;object-fit:cover}
+            @media (min-width:768px){.intro__desc ul{columns:2;column-gap:2rem}.intro__desc ul li{break-inside:avoid}}
         </style>
         <!-- NEWS-TICKER:START --><!-- NEWS-TICKER:END -->
         <section class="slideshow">
@@ -725,9 +736,6 @@
 
             <!-- HOME-NEWS:START -->
             <!-- HOME-NEWS:END -->
-
-            <!-- HOME-KNOWLEDGE:START -->
-            <!-- HOME-KNOWLEDGE:END -->
 
             <section class="newsletter-question">
                 <div class="newsletter-question__inner d-flex flex-wrap justify-content-center">
