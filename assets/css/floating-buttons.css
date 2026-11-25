@@ -114,7 +114,8 @@ body {-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;}
 }
 
 /* Banner đầu trang: ảnh gốc có viền đen ở trên/dưới; cắt viền (27px/796 và 10px/796 chiều rộng ảnh) */
-.slideshow__photo-inner {overflow: hidden; margin: 0;}
+/* Giới hạn bề rộng banner để không quá lớn trên màn hình rộng: ảnh gốc chỉ 796px, phóng to hơn sẽ bị mờ */
+.slideshow__photo-inner {overflow: hidden; margin: 0 auto; max-width: 796px;}
 .slideshow__photo-inner img {margin-top: -3.4%; margin-bottom: -1.26%;}
 
 .footer__header {margin-bottom: .8rem;}
@@ -128,4 +129,9 @@ body {-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;}
 .home-news__more {text-align: center; margin: 24px 0 0;}
 @media (max-width: 575px) {
     .home-contact__actions .home__btn {flex: 1 1 100%; justify-content: center;}
+}
+
+/* Banner thu nhỏ trên màn hình rộng: bo góc để trông như một thẻ, không bị cụt hai bên */
+@media (min-width: 797px) {
+    .slideshow__photo-inner {border-radius: 12px; margin-top: 16px; margin-bottom: 16px;}
 }
