@@ -1,6 +1,7 @@
 ---
 title: Xuất hiện biến thể COVID-19 mới, Bộ Y tế khuyến cáo phòng bệnh
 date: 2026-11-25T20:32:00+07:00
+thumbnail: upload/news/covid.jpg
 description: Bộ Y tế khuyến cáo người dân chủ động phòng COVID-19 trước sự gia
   tăng của biến thể PJ.2.1 tại một số quốc gia.
 draft: false
