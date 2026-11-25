@@ -67,6 +67,7 @@ collections:
         date_format: 'DD/MM/YYYY'
         time_format: 'HH:mm'
         picker_utc: false
+      - {label: Chuyên mục, name: category, widget: select, required: false, default: '', options: [{label: '(Không chọn)', value: ''}, {label: Chuyện đi sinh, value: chuyen-di-sinh}], hint: 'Chọn Chuyện đi sinh để bài cũng hiện ở mục Câu chuyện > Chuyện đi sinh.'}
       - {label: Ảnh đại diện, name: thumbnail, widget: image, required: false}
       - {label: Mô tả ngắn, name: description, widget: text, required: false, hint: 'Hiển thị ở danh sách bài viết và Google. Để trống sẽ tự lấy từ nội dung.'}
       - {label: Ẩn bài (nháp), name: draft, widget: boolean, default: false, required: false}

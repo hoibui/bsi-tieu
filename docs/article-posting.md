@@ -17,6 +17,11 @@ Trong admin có hai mục:
 | Câu chuyện | `content/stories/` | `cau-chuyen.html` |
 
 Cả hai dùng chung một mẫu trang và cách viết bài. Tên bài (slug) phải khác nhau giữa hai mục.
+Trong mục Câu chuyện, chọn **Chuyên mục = Chuyện đi sinh** để bài cũng hiện ở trang `chuyen-di-sinh`
+(menu Câu chuyện > Chuyện đi sinh); bài vẫn nằm trong danh sách chung của Câu chuyện. Muốn thêm chuyên mục khác:
+thêm lựa chọn vào trường `category` trong `admin/config.yml`, một mục vào `categories` của section trong
+`scripts/build.mjs`, tạo trang danh sách (sao từ `chuyen-di-sinh.html`) và thêm mục vào menu ở mọi trang.
+
 Muốn thêm mục mới: thêm một collection vào `admin/config.yml`, một dòng vào `SECTIONS` trong
 `scripts/build.mjs`, và thêm cặp `<!-- POSTS:START -->` / `<!-- POSTS:END -->` vào trang danh sách.
 

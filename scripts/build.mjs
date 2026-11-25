@@ -14,7 +14,9 @@ const POSTS_DIR = path.join(ROOT, 'content/posts');
 // Each section reads Markdown from `dir` and lists its posts in `listFile` (between the POSTS markers).
 export const SECTIONS = [
     {dir: 'content/posts', listFile: 'kien-thuc.html', name: 'Kiến thức', href: 'kien-thuc'},
-    {dir: 'content/stories', listFile: 'cau-chuyen.html', name: 'Câu chuyện', href: 'cau-chuyen'},
+    {dir: 'content/stories', listFile: 'cau-chuyen.html', name: 'Câu chuyện', href: 'cau-chuyen',
+        // A story with `category: <key>` is also listed on that category's page (it stays on the section list too).
+        categories: [{key: 'chuyen-di-sinh', listFile: 'chuyen-di-sinh.html'}]},
 ];
 const MARK = '<!-- generated-by: scripts/build.mjs -->';
 const PAGE_START = '<!-- PAGE:START -->';
@@ -61,7 +63,7 @@ export function loadPosts(dir = POSTS_DIR) {
         if (Number.isNaN(date.getTime())) throw new Error(`${file}: missing or invalid date`);
         const body = marked.parse(content, {gfm: true, breaks: false});
         const description = String(data.description || plainText(body).slice(0, 160));
-        posts.push({slug, title: String(data.title), date, thumbnail: data.thumbnail ? String(data.thumbnail) : '', description, body});
+        posts.push({slug, title: String(data.title), date, category: data.category ? String(data.category) : '', thumbnail: data.thumbnail ? String(data.thumbnail) : '', description, body});
     }
     return posts.sort((a, b) => b.date - a.date);
 }
@@ -170,7 +172,7 @@ export function buildPages(root = ROOT, pages = PAGES) {
 }
 
 // ---- Search index (search-index.json), used by tim-kiem.html ----
-const SEARCH_SKIP = new Set(['tim-kiem', 'kien-thuc', 'cau-chuyen', 'index']);
+const SEARCH_SKIP = new Set(['tim-kiem', 'kien-thuc', 'cau-chuyen', 'chuyen-di-sinh', 'index']);
 
 const decodeEntities = (t) => t.replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
@@ -225,6 +227,10 @@ export function build({root = ROOT, sections = SECTIONS} = {}) {
         }
         const listFile = path.join(root, section.listFile);
         fs.writeFileSync(listFile, updateList(fs.readFileSync(listFile, 'utf8'), posts));
+        for (const cat of section.categories || []) {
+            const catFile = path.join(root, cat.listFile);
+            fs.writeFileSync(catFile, updateList(fs.readFileSync(catFile, 'utf8'), posts.filter((p) => p.category === cat.key)));
+        }
         all.push(...posts);
     }
     buildPages(root);
