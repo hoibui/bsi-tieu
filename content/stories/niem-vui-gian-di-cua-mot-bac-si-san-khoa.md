@@ -6,6 +6,8 @@ thumbnail: upload/news/1795600923737_7427154492578241514_7427154492578241514_fa1
 description: ""
 draft: false
 ---
+![](upload/news/1795600923737_7427154492578241514_7427154492578241514_fa19a77536a5ac41371a5227ddd045a9.jpg)
+
 Có một điều mà bác Tiều luôn cảm thấy rất đặc biệt khi làm nghề đó là những gia đình đến trong sự hồi hộp, mong ngóng và khi ra về lại có thêm một thành viên bé nhỏ trên tay.
 
 Làm nghề này, có những ngày bác phải đứng trong phòng sinh suốt nhiều giờ, những ca trực kéo dài đến tận sáng, có khi bận đến mức chẳng kịp ăn một bữa cho đàng hoàng.
