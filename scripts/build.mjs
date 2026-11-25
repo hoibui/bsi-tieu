@@ -26,10 +26,12 @@ export const SECTIONS = [
             {key: 'hiem-muon', listFile: 'hiem-muon.html'},
         ]},
     {dir: 'content/stories', listFile: 'chuyen-di-sinh.html', name: 'Chuyện đi sinh', href: 'chuyen-di-sinh'},
-    {dir: 'content/news', listFile: 'tin-tuc.html', name: 'Tin tức', href: 'tin-tuc', ticker: {file: 'index.html', max: 5}},
+    {dir: 'content/news', listFile: 'tin-tuc.html', name: 'Tin tức', href: 'tin-tuc', ticker: {file: 'index.html', max: 5}, homeNews: {file: 'index.html', max: 4}},
 ];
 const TICKER_START = '<!-- NEWS-TICKER:START -->';
 const TICKER_END = '<!-- NEWS-TICKER:END -->';
+const HOME_NEWS_START = '<!-- HOME-NEWS:START -->';
+const HOME_NEWS_END = '<!-- HOME-NEWS:END -->';
 const MARK = '<!-- generated-by: scripts/build.mjs -->';
 const PAGE_START = '<!-- PAGE:START -->';
 const PAGE_END = '<!-- PAGE:END -->';
@@ -124,6 +126,32 @@ export function updateTicker(html, posts, max) {
     if (a < 0 || b < a) throw new Error(`home page is missing ${TICKER_START} / ${TICKER_END} markers`);
     const t = tickerHtml(posts, max);
     return html.slice(0, a + TICKER_START.length) + (t ? '\n        ' + t + '\n        ' : '') + html.slice(b);
+}
+
+// "Tin tức" block on the home page: the newest news as cards. Empty (nothing rendered) when there is no news.
+export function homeNewsHtml(posts, max = 4) {
+    const items = posts.slice(0, max).map(listItem).join('\n');
+    if (!items) return '';
+    return `<section class="home-news pd-50">
+                <div class="wrap-content">
+                    <div class="home__title has-shape --color-powder-blue">
+                        <h2>Tin tức</h2>
+                    </div>
+                    <div class="news">
+                        <div class="news__list row">
+${items}
+                        </div>
+                    </div>
+                    <p class="home-news__more"><a class="home__btn home-contact__alt transition" href="tin-tuc">Xem tất cả tin tức</a></p>
+                </div>
+            </section>`;
+}
+
+export function updateHomeNews(html, posts, max) {
+    const a = html.indexOf(HOME_NEWS_START), b = html.indexOf(HOME_NEWS_END);
+    if (a < 0 || b < a) throw new Error(`home page is missing ${HOME_NEWS_START} / ${HOME_NEWS_END} markers`);
+    const t = homeNewsHtml(posts, max);
+    return html.slice(0, a + HOME_NEWS_START.length) + (t ? '\n            ' + t + '\n            ' : '') + html.slice(b);
 }
 
 // Hand-written pages whose main content is edited in the CMS (content/pages/<name>.md, front matter only).
@@ -263,6 +291,10 @@ export function build({root = ROOT, sections = SECTIONS} = {}) {
         if (section.ticker) {
             const tf = path.join(root, section.ticker.file);
             fs.writeFileSync(tf, updateTicker(fs.readFileSync(tf, 'utf8'), posts, section.ticker.max));
+        }
+        if (section.homeNews) {
+            const hf = path.join(root, section.homeNews.file);
+            fs.writeFileSync(hf, updateHomeNews(fs.readFileSync(hf, 'utf8'), posts, section.homeNews.max));
         }
         all.push(...posts);
     }
