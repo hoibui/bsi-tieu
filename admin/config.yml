@@ -43,14 +43,15 @@ collections:
         date_format: 'DD/MM/YYYY'
         time_format: 'HH:mm'
         picker_utc: false
+      - {label: Chuyên mục, name: category, widget: select, required: false, default: '', options: [{label: '(Không chọn)', value: ''}, {label: Tam cá nguyệt 1, value: tam-ca-nguyet-1}, {label: Tam cá nguyệt 2, value: tam-ca-nguyet-2}, {label: Tam cá nguyệt 3, value: tam-ca-nguyet-3}, {label: Nhập viện, value: nhap-vien}, {label: Nằm viện, value: nam-vien}, {label: Sau sanh, value: sau-sanh}, {label: Phụ khoa, value: phu-khoa}, {label: Hiếm muộn, value: hiem-muon}], hint: 'Chọn chuyên mục để bài hiện ở mục con tương ứng của Kiến thức. Bài vẫn hiện ở danh sách chung.'}
       - {label: Ảnh đại diện, name: thumbnail, widget: image, required: false}
       - {label: Mô tả ngắn, name: description, widget: text, required: false, hint: 'Hiển thị ở danh sách bài viết và Google. Để trống sẽ tự lấy từ nội dung.'}
       - {label: Ẩn bài (nháp), name: draft, widget: boolean, default: false, required: false}
       - {label: Nội dung, name: body, widget: markdown}
 
   - name: stories
-    label: Câu chuyện
-    label_singular: Câu chuyện
+    label: Chuyện đi sinh
+    label_singular: Chuyện đi sinh
     folder: content/stories
     extension: md
     create: true
@@ -67,7 +68,30 @@ collections:
         date_format: 'DD/MM/YYYY'
         time_format: 'HH:mm'
         picker_utc: false
-      - {label: Chuyên mục, name: category, widget: select, required: false, default: '', options: [{label: '(Không chọn)', value: ''}, {label: Chuyện đi sinh, value: chuyen-di-sinh}], hint: 'Chọn Chuyện đi sinh để bài cũng hiện ở mục Câu chuyện > Chuyện đi sinh.'}
+      - {label: Ảnh đại diện, name: thumbnail, widget: image, required: false}
+      - {label: Mô tả ngắn, name: description, widget: text, required: false, hint: 'Hiển thị ở danh sách bài viết và Google. Để trống sẽ tự lấy từ nội dung.'}
+      - {label: Ẩn bài (nháp), name: draft, widget: boolean, default: false, required: false}
+      - {label: Nội dung, name: body, widget: markdown}
+
+  - name: news
+    label: Tin tức
+    label_singular: Tin tức
+    folder: content/news
+    extension: md
+    create: true
+    delete: true
+    slug: '{{slug}}'
+    summary: '{{title}} - {{date}}'
+    sortable_fields: ['date', 'title']
+    fields:
+      - {label: Tiêu đề, name: title, widget: string}
+      - label: Ngày đăng
+        name: date
+        widget: datetime
+        format: 'YYYY-MM-DDTHH:mm:ssZ'
+        date_format: 'DD/MM/YYYY'
+        time_format: 'HH:mm'
+        picker_utc: false
       - {label: Ảnh đại diện, name: thumbnail, widget: image, required: false}
       - {label: Mô tả ngắn, name: description, widget: text, required: false, hint: 'Hiển thị ở danh sách bài viết và Google. Để trống sẽ tự lấy từ nội dung.'}
       - {label: Ẩn bài (nháp), name: draft, widget: boolean, default: false, required: false}

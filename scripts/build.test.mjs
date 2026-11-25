@@ -8,15 +8,17 @@ import {build, escHtml, formatDate, jsonSafe, updateList, renderPriceTable} from
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-function sandbox(posts, stories = {}) {
+const CATEGORY_KEYS = ['tam-ca-nguyet-1', 'tam-ca-nguyet-2', 'tam-ca-nguyet-3', 'nhap-vien', 'nam-vien', 'sau-sanh', 'phu-khoa', 'hiem-muon'];
+
+function sandbox(posts, stories = {}, news = {}) {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'bsi-'));
     fs.mkdirSync(path.join(root, 'templates'));
     fs.mkdirSync(path.join(root, 'content/posts'), {recursive: true});
     fs.mkdirSync(path.join(root, 'content/stories'), {recursive: true});
     fs.copyFileSync(path.join(REPO, 'templates/article.html'), path.join(root, 'templates/article.html'));
     fs.copyFileSync(path.join(REPO, 'kien-thuc.html'), path.join(root, 'kien-thuc.html'));
-    fs.copyFileSync(path.join(REPO, 'cau-chuyen.html'), path.join(root, 'cau-chuyen.html'));
-    fs.copyFileSync(path.join(REPO, 'chuyen-di-sinh.html'), path.join(root, 'chuyen-di-sinh.html'));
+    for (const f of ['chuyen-di-sinh', 'tin-tuc', 'index', ...CATEGORY_KEYS]) fs.copyFileSync(path.join(REPO, `${f}.html`), path.join(root, `${f}.html`));
+    fs.mkdirSync(path.join(root, 'content/news'), {recursive: true});
     fs.copyFileSync(path.join(REPO, 'gia-dich-vu.html'), path.join(root, 'gia-dich-vu.html'));
     fs.mkdirSync(path.join(root, 'content/pages'), {recursive: true});
     for (const n of ['gia-dich-vu', 'lich-kham', 'kham-thai-ki']) fs.copyFileSync(path.join(REPO, `content/pages/${n}.md`), path.join(root, `content/pages/${n}.md`));
@@ -24,6 +26,7 @@ function sandbox(posts, stories = {}) {
     fs.copyFileSync(path.join(REPO, 'kham-thai-ki.html'), path.join(root, 'kham-thai-ki.html'));
     for (const [name, text] of Object.entries(posts)) fs.writeFileSync(path.join(root, 'content/posts', name), text);
     for (const [name, text] of Object.entries(stories)) fs.writeFileSync(path.join(root, 'content/stories', name), text);
+    for (const [name, text] of Object.entries(news)) fs.writeFileSync(path.join(root, 'content/news', name), text);
     return root;
 }
 const run = (root) => build({root});
@@ -81,36 +84,60 @@ test('rejects bad slugs, missing title and bad dates', () => {
     assert.throws(() => run(sandbox({'a.md': `---\ntitle: X\n---\n`})), /invalid date/);
 });
 
-test('stories go to cau-chuyen.html and posts stay on kien-thuc.html', () => {
+test('stories go to chuyen-di-sinh.html and posts stay on kien-thuc.html', () => {
     const root = sandbox(
         {'kt.md': `---\ntitle: Kiến thức A\ndate: 2026-01-01T00:00:00+07:00\n---\nx\n`},
-        {'cc.md': `---\ntitle: Câu chuyện B\ndate: 2026-02-01T00:00:00+07:00\n---\ny\n`},
+        {'cc.md': `---\ntitle: Chuyện B\ndate: 2026-02-01T00:00:00+07:00\n---\ny\n`},
     );
     run(root);
     const kt = fs.readFileSync(path.join(root, 'kien-thuc.html'), 'utf8');
-    const cc = fs.readFileSync(path.join(root, 'cau-chuyen.html'), 'utf8');
+    const cc = fs.readFileSync(path.join(root, 'chuyen-di-sinh.html'), 'utf8');
     assert.ok(kt.includes('href="kt"') && !kt.includes('href="cc"'));
     assert.ok(cc.includes('href="cc"') && !cc.includes('href="kt"'));
     const page = fs.readFileSync(path.join(root, 'cc.html'), 'utf8');
-    assert.match(page, /href="cau-chuyen"><span>Câu chuyện<\/span>/);
-    assert.match(page, /"name": "Câu chuyện", "item": "https:\/\/phantrungtieu\.com\/cau-chuyen"/);
+    assert.match(page, /href="chuyen-di-sinh"><span>Chuyện đi sinh<\/span>/);
     assert.match(fs.readFileSync(path.join(root, 'kt.html'), 'utf8'), /href="kien-thuc"><span>Kiến thức<\/span>/);
     run(root); // idempotent
-    assert.equal(fs.readFileSync(path.join(root, 'cau-chuyen.html'), 'utf8'), cc);
+    assert.equal(fs.readFileSync(path.join(root, 'chuyen-di-sinh.html'), 'utf8'), cc);
 });
 
-test('stories with category chuyen-di-sinh are also listed on chuyen-di-sinh.html', () => {
-    const root = sandbox({}, {
-        'a.md': `---\ntitle: Đi sinh A\ndate: 2026-01-01T00:00:00+07:00\ncategory: chuyen-di-sinh\n---\nx\n`,
-        'b.md': `---\ntitle: Chuyện khác B\ndate: 2026-02-01T00:00:00+07:00\n---\ny\n`,
+test('posts with a category are also listed on that category page only', () => {
+    const root = sandbox({
+        'a.md': `---\ntitle: Bài A\ndate: 2026-01-01T00:00:00+07:00\ncategory: sau-sanh\n---\nx\n`,
+        'b.md': `---\ntitle: Bài B\ndate: 2026-02-01T00:00:00+07:00\n---\ny\n`,
     });
     run(root);
-    const cat = fs.readFileSync(path.join(root, 'chuyen-di-sinh.html'), 'utf8');
-    const all = fs.readFileSync(path.join(root, 'cau-chuyen.html'), 'utf8');
+    const cat = fs.readFileSync(path.join(root, 'sau-sanh.html'), 'utf8');
+    const all = fs.readFileSync(path.join(root, 'kien-thuc.html'), 'utf8');
     assert.ok(cat.includes('href="a"') && !cat.includes('href="b"'));
     assert.ok(all.includes('href="a"') && all.includes('href="b"'));
+    for (const other of CATEGORY_KEYS.filter((k) => k !== 'sau-sanh')) {
+        assert.ok(!fs.readFileSync(path.join(root, `${other}.html`), 'utf8').includes('href="a"'), other);
+    }
     run(root); // idempotent
-    assert.equal(fs.readFileSync(path.join(root, 'chuyen-di-sinh.html'), 'utf8'), cat);
+    assert.equal(fs.readFileSync(path.join(root, 'sau-sanh.html'), 'utf8'), cat);
+});
+
+test('news go to tin-tuc.html and the newest 5 appear in the home page ticker', () => {
+    const news = {};
+    for (let i = 1; i <= 6; i++) news[`n${i}.md`] = `---\ntitle: Tin <${i}>\ndate: 2026-01-0${i}T00:00:00+07:00\n---\nx\n`;
+    const root = sandbox({}, {}, news);
+    run(root);
+    const list = fs.readFileSync(path.join(root, 'tin-tuc.html'), 'utf8');
+    assert.ok(list.includes('href="n1"') && list.includes('href="n6"'));
+    const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    const ticker = home.slice(home.indexOf('<!-- NEWS-TICKER:START -->'), home.indexOf('<!-- NEWS-TICKER:END -->'));
+    assert.ok(ticker.includes('href="n6"') && ticker.includes('href="n2"') && !ticker.includes('href="n1"'));
+    assert.ok(ticker.includes('Tin &lt;6&gt;') && !ticker.includes('Tin <6>'));
+    run(root); // idempotent
+    assert.equal(fs.readFileSync(path.join(root, 'index.html'), 'utf8'), home);
+});
+
+test('no news leaves no ticker on the home page', () => {
+    const root = sandbox({});
+    run(root);
+    const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    assert.ok(!home.includes('class="news-ticker'));
 });
 
 test('rejects the same slug in two sections', () => {
@@ -118,9 +145,11 @@ test('rejects the same slug in two sections', () => {
     assert.throws(() => run(sandbox({'dup.md': md}, {'dup.md': md})), /Duplicate slug/);
 });
 
-test('real kien-thuc.html and cau-chuyen.html have markers; zero posts leaves lists unchanged', () => {
-    const cc = fs.readFileSync(path.join(REPO, 'cau-chuyen.html'), 'utf8');
-    assert.equal(updateList(cc, []), cc);
+test('every real list page has markers; zero posts leaves lists unchanged', () => {
+    for (const f of ['chuyen-di-sinh', 'tin-tuc', ...CATEGORY_KEYS]) {
+        const html = fs.readFileSync(path.join(REPO, `${f}.html`), 'utf8');
+        assert.equal(updateList(html, []), html, f);
+    }
 });
 
 test('real kien-thuc.html has markers and zero posts leaves the list empty', () => {
@@ -170,7 +199,7 @@ test('schedule page renders hours, escaped note and markdown body; committed HTM
 
 test('search index covers pages and posts, skips list pages, strips tags and scripts', () => {
     const root = sandbox({'bai-moi.md': `---\ntitle: Bài về phụ khoa\ndate: 2026-01-01T00:00:00+07:00\n---\nNội dung **khám phụ khoa** định kỳ.\n`});
-    fs.writeFileSync(path.join(root, 'index.html'), '<main><p>home</p></main>');
+    fs.writeFileSync(path.join(root, 'index.html'), '<main><!-- NEWS-TICKER:START --><!-- NEWS-TICKER:END --><p>home</p></main>');
     fs.writeFileSync(path.join(root, 'tim-kiem.html'), '<main><p>x</p></main>');
     fs.writeFileSync(path.join(root, 'trang-khac.html'),
         '<title>T</title><main><div class="wrap-main"><div class="main__title"><h2>Giới &amp; thiệu</h2></div><script>var secret=1</script><p>Xin chào&nbsp;bạn</p></div></main>');
@@ -178,7 +207,7 @@ test('search index covers pages and posts, skips list pages, strips tags and scr
     const idx = JSON.parse(fs.readFileSync(path.join(root, 'search-index.json'), 'utf8'));
     const urls = idx.map((e) => e.url);
     assert.ok(urls.includes('bai-moi') && urls.includes('trang-khac') && urls.includes('gia-dich-vu'));
-    for (const skip of ['index', 'tim-kiem', 'kien-thuc', 'cau-chuyen']) assert.ok(!urls.includes(skip), skip);
+    for (const skip of ['index', 'tim-kiem', 'kien-thuc', 'chuyen-di-sinh', 'tin-tuc', ...CATEGORY_KEYS]) assert.ok(!urls.includes(skip), skip);
     const e = idx.find((x) => x.url === 'trang-khac');
     assert.equal(e.title, 'Giới & thiệu');
     assert.ok(!e.text.includes('secret') && !e.text.includes('<'));
