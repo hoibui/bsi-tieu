@@ -16,6 +16,7 @@ function sandbox(posts, stories = {}) {
     fs.copyFileSync(path.join(REPO, 'templates/article.html'), path.join(root, 'templates/article.html'));
     fs.copyFileSync(path.join(REPO, 'kien-thuc.html'), path.join(root, 'kien-thuc.html'));
     fs.copyFileSync(path.join(REPO, 'cau-chuyen.html'), path.join(root, 'cau-chuyen.html'));
+    fs.copyFileSync(path.join(REPO, 'chuyen-di-sinh.html'), path.join(root, 'chuyen-di-sinh.html'));
     fs.copyFileSync(path.join(REPO, 'gia-dich-vu.html'), path.join(root, 'gia-dich-vu.html'));
     fs.mkdirSync(path.join(root, 'content/pages'), {recursive: true});
     for (const n of ['gia-dich-vu', 'lich-kham', 'kham-thai-ki']) fs.copyFileSync(path.join(REPO, `content/pages/${n}.md`), path.join(root, `content/pages/${n}.md`));
@@ -96,6 +97,20 @@ test('stories go to cau-chuyen.html and posts stay on kien-thuc.html', () => {
     assert.match(fs.readFileSync(path.join(root, 'kt.html'), 'utf8'), /href="kien-thuc"><span>Kiến thức<\/span>/);
     run(root); // idempotent
     assert.equal(fs.readFileSync(path.join(root, 'cau-chuyen.html'), 'utf8'), cc);
+});
+
+test('stories with category chuyen-di-sinh are also listed on chuyen-di-sinh.html', () => {
+    const root = sandbox({}, {
+        'a.md': `---\ntitle: Đi sinh A\ndate: 2026-01-01T00:00:00+07:00\ncategory: chuyen-di-sinh\n---\nx\n`,
+        'b.md': `---\ntitle: Chuyện khác B\ndate: 2026-02-01T00:00:00+07:00\n---\ny\n`,
+    });
+    run(root);
+    const cat = fs.readFileSync(path.join(root, 'chuyen-di-sinh.html'), 'utf8');
+    const all = fs.readFileSync(path.join(root, 'cau-chuyen.html'), 'utf8');
+    assert.ok(cat.includes('href="a"') && !cat.includes('href="b"'));
+    assert.ok(all.includes('href="a"') && all.includes('href="b"'));
+    run(root); // idempotent
+    assert.equal(fs.readFileSync(path.join(root, 'chuyen-di-sinh.html'), 'utf8'), cat);
 });
 
 test('rejects the same slug in two sections', () => {
