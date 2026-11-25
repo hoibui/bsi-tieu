@@ -420,12 +420,19 @@
             </div>
             <div class="share">
                 <b>Chia sẻ:</b>
-                <div class="social-plugin w-clear">
-                    <div class="addthis_inline_share_toolbox_dc09"></div>
-                    <div class="zalo-share-button"
-                         data-color="blue"
-                         data-customize=false data-href="qui-trinh-thoi-gian-chi-phi-lam-thu-tinh-ong-nghiem-ivf-bao-nhieu" data-layout="3" data-oaid="579745863508352884"></div>
+                <div class="share-buttons">
+                    <a class="share-btn share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://phantrungtieu.com/qui-trinh-thoi-gian-chi-phi-lam-thu-tinh-ong-nghiem-ivf-bao-nhieu"
+                       target="_blank" rel="noopener noreferrer">Facebook</a>
+                    <button class="share-btn share-copy" type="button" data-url="https://phantrungtieu.com/qui-trinh-thoi-gian-chi-phi-lam-thu-tinh-ong-nghiem-ivf-bao-nhieu"
+                            onclick="var b=this;navigator.clipboard.writeText(b.dataset.url).then(function(){b.textContent='Đã sao chép';setTimeout(function(){b.textContent='Sao chép liên kết'},2000)})">Sao chép liên kết</button>
                 </div>
+                <style>
+                    .share-buttons{display:inline-flex;flex-wrap:wrap;gap:8px;vertical-align:middle;margin-left:8px}
+                    .share-btn{display:inline-block;padding:6px 14px;border:0;border-radius:4px;color:#fff;font:inherit;font-size:14px;line-height:1.4;cursor:pointer;text-decoration:none}
+                    .share-btn:hover{opacity:.85;color:#fff}
+                    .share-fb{background:#1877f2}
+                    .share-copy{background:#6c757d}
+                </style>
             </div>
 
             <div class="share news-other mb-3">
