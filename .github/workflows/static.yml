@@ -49,6 +49,9 @@ jobs:
         with:
           # Upload entire repository
           path: '.'
+      - name: Wait for artifact to become visible
+        # deploy-pages sometimes lists 0 artifacts right after upload (GitHub-side delay)
+        run: sleep 20
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
