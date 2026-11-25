@@ -2,6 +2,7 @@
 title: Rối loạn phóng noãn – Một trong những nguyên nhân phổ biến gây hiếm muộn
 date: 2026-11-25T22:15:00+07:00
 category: hiem-muon
+thumbnail: upload/news/rlpn.png
 draft: false
 ---
 ## Rối loạn phóng noãn là gì?
