@@ -118,7 +118,7 @@ test('posts with a category are also listed on that category page only', () => {
     assert.equal(fs.readFileSync(path.join(root, 'sau-sanh.html'), 'utf8'), cat);
 });
 
-test('news go to tin-tuc.html and the newest 5 appear in the home page ticker', () => {
+test('news go to tin-tuc.html and the newest 4 appear in the home page ticker', () => {
     const news = {};
     for (let i = 1; i <= 6; i++) news[`n${i}.md`] = `---\ntitle: Tin <${i}>\ndate: 2026-01-0${i}T00:00:00+07:00\n---\nx\n`;
     const root = sandbox({}, {}, news);
@@ -127,7 +127,7 @@ test('news go to tin-tuc.html and the newest 5 appear in the home page ticker', 
     assert.ok(list.includes('href="n1"') && list.includes('href="n6"'));
     const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
     const ticker = home.slice(home.indexOf('<!-- NEWS-TICKER:START -->'), home.indexOf('<!-- NEWS-TICKER:END -->'));
-    assert.ok(ticker.includes('href="n6"') && ticker.includes('href="n2"') && !ticker.includes('href="n1"'));
+    assert.ok(ticker.includes('href="n6"') && ticker.includes('href="n3"') && !ticker.includes('href="n2"'));
     assert.ok(ticker.includes('Tin &lt;6&gt;') && !ticker.includes('Tin <6>'));
     const block = home.slice(home.indexOf('<!-- HOME-NEWS:START -->'), home.indexOf('<!-- HOME-NEWS:END -->'));
     assert.ok(block.includes('<h2>Tin tức</h2>') && block.includes('href="tin-tuc"'));
