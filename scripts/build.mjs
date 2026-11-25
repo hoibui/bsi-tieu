@@ -15,6 +15,7 @@ const POSTS_DIR = path.join(ROOT, 'content/posts');
 export const SECTIONS = [
     {dir: 'content/posts', listFile: 'kien-thuc.html', name: 'Kiến thức', href: 'kien-thuc',
         // A post with `category: <key>` is also listed on that category's page (it stays on the section list too).
+        homeBlock: {file: 'index.html', max: 4, marker: 'HOME-KNOWLEDGE', title: 'Kiến thức sức khỏe', href: 'kien-thuc', more: 'Xem tất cả bài viết'},
         categories: [
             {key: 'tam-ca-nguyet-1', listFile: 'tam-ca-nguyet-1.html'},
             {key: 'tam-ca-nguyet-2', listFile: 'tam-ca-nguyet-2.html'},
@@ -26,7 +27,7 @@ export const SECTIONS = [
             {key: 'hiem-muon', listFile: 'hiem-muon.html'},
         ]},
     {dir: 'content/stories', listFile: 'chuyen-di-sinh.html', name: 'Chuyện đi sinh', href: 'chuyen-di-sinh'},
-    {dir: 'content/news', listFile: 'tin-tuc.html', name: 'Tin tức', href: 'tin-tuc', ticker: {file: 'index.html', max: 5}},
+    {dir: 'content/news', listFile: 'tin-tuc.html', name: 'Tin tức', href: 'tin-tuc', ticker: {file: 'index.html', max: 5}, homeBlock: {file: 'index.html', max: 4, marker: 'HOME-NEWS', title: 'Tin tức', href: 'tin-tuc', more: 'Xem tất cả tin tức'}},
 ];
 const TICKER_START = '<!-- NEWS-TICKER:START -->';
 const TICKER_END = '<!-- NEWS-TICKER:END -->';
@@ -124,6 +125,34 @@ export function updateTicker(html, posts, max) {
     if (a < 0 || b < a) throw new Error(`home page is missing ${TICKER_START} / ${TICKER_END} markers`);
     const t = tickerHtml(posts, max);
     return html.slice(0, a + TICKER_START.length) + (t ? '\n        ' + t + '\n        ' : '') + html.slice(b);
+}
+
+// Block on the home page (between <!-- <marker>:START --> / END): the newest posts of a section as cards.
+// Renders nothing when the section has no posts.
+export function homeBlockHtml(posts, o) {
+    const items = posts.slice(0, o.max).map(listItem).join('\n');
+    if (!items) return '';
+    return `<section class="home-news pd-50">
+                <div class="wrap-content">
+                    <div class="home__title has-shape --color-powder-blue">
+                        <h2>${escHtml(o.title)}</h2>
+                    </div>
+                    <div class="news">
+                        <div class="news__list row">
+${items}
+                        </div>
+                    </div>
+                    <p class="home-news__more"><a class="home__btn home-contact__alt transition" href="${o.href}">${escHtml(o.more)}</a></p>
+                </div>
+            </section>`;
+}
+
+export function updateHomeBlock(html, posts, o) {
+    const start = `<!-- ${o.marker}:START -->`, end = `<!-- ${o.marker}:END -->`;
+    const a = html.indexOf(start), b = html.indexOf(end);
+    if (a < 0 || b < a) throw new Error(`home page is missing ${start} / ${end} markers`);
+    const t = homeBlockHtml(posts, o);
+    return html.slice(0, a + start.length) + (t ? '\n            ' + t + '\n            ' : '') + html.slice(b);
 }
 
 // Hand-written pages whose main content is edited in the CMS (content/pages/<name>.md, front matter only).
@@ -263,6 +292,10 @@ export function build({root = ROOT, sections = SECTIONS} = {}) {
         if (section.ticker) {
             const tf = path.join(root, section.ticker.file);
             fs.writeFileSync(tf, updateTicker(fs.readFileSync(tf, 'utf8'), posts, section.ticker.max));
+        }
+        if (section.homeBlock) {
+            const hf = path.join(root, section.homeBlock.file);
+            fs.writeFileSync(hf, updateHomeBlock(fs.readFileSync(hf, 'utf8'), posts, section.homeBlock));
         }
         all.push(...posts);
     }

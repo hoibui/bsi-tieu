@@ -129,8 +129,23 @@ test('news go to tin-tuc.html and the newest 5 appear in the home page ticker', 
     const ticker = home.slice(home.indexOf('<!-- NEWS-TICKER:START -->'), home.indexOf('<!-- NEWS-TICKER:END -->'));
     assert.ok(ticker.includes('href="n6"') && ticker.includes('href="n2"') && !ticker.includes('href="n1"'));
     assert.ok(ticker.includes('Tin &lt;6&gt;') && !ticker.includes('Tin <6>'));
+    const block = home.slice(home.indexOf('<!-- HOME-NEWS:START -->'), home.indexOf('<!-- HOME-NEWS:END -->'));
+    assert.ok(block.includes('<h2>Tin tức</h2>') && block.includes('href="tin-tuc"'));
+    assert.ok(block.includes('href="n6"') && block.includes('href="n3"') && !block.includes('href="n2"'));
+    assert.equal((block.match(/class="news__item/g) || []).length, 4);
     run(root); // idempotent
     assert.equal(fs.readFileSync(path.join(root, 'index.html'), 'utf8'), home);
+});
+
+test('posts fill the home Kiến thức block (max 4) and none leaves it empty', () => {
+    const posts = {};
+    for (let i = 1; i <= 5; i++) posts[`p${i}.md`] = `---\ntitle: Bài ${i}\ndate: 2026-01-0${i}T00:00:00+07:00\n---\nx\n`;
+    const root = sandbox(posts);
+    run(root);
+    const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    const block = home.slice(home.indexOf('<!-- HOME-KNOWLEDGE:START -->'), home.indexOf('<!-- HOME-KNOWLEDGE:END -->'));
+    assert.ok(block.includes('<h2>Kiến thức sức khỏe</h2>') && block.includes('href="p5"') && !block.includes('href="p1"'));
+    assert.equal((block.match(/class="news__item/g) || []).length, 4);
 });
 
 test('no news leaves no ticker on the home page', () => {
@@ -138,6 +153,7 @@ test('no news leaves no ticker on the home page', () => {
     run(root);
     const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
     assert.ok(!home.includes('class="news-ticker'));
+    assert.ok(!home.slice(home.indexOf('<!-- HOME-NEWS:START -->'), home.indexOf('<!-- HOME-NEWS:END -->')).includes('<section'));
 });
 
 test('rejects the same slug in two sections', () => {
@@ -199,7 +215,7 @@ test('schedule page renders hours, escaped note and markdown body; committed HTM
 
 test('search index covers pages and posts, skips list pages, strips tags and scripts', () => {
     const root = sandbox({'bai-moi.md': `---\ntitle: Bài về phụ khoa\ndate: 2026-01-01T00:00:00+07:00\n---\nNội dung **khám phụ khoa** định kỳ.\n`});
-    fs.writeFileSync(path.join(root, 'index.html'), '<main><!-- NEWS-TICKER:START --><!-- NEWS-TICKER:END --><p>home</p></main>');
+    fs.writeFileSync(path.join(root, 'index.html'), '<main><!-- NEWS-TICKER:START --><!-- NEWS-TICKER:END --><!-- HOME-NEWS:START --><!-- HOME-NEWS:END --><!-- HOME-KNOWLEDGE:START --><!-- HOME-KNOWLEDGE:END --><p>home</p></main>');
     fs.writeFileSync(path.join(root, 'tim-kiem.html'), '<main><p>x</p></main>');
     fs.writeFileSync(path.join(root, 'trang-khac.html'),
         '<title>T</title><main><div class="wrap-main"><div class="main__title"><h2>Giới &amp; thiệu</h2></div><script>var secret=1</script><p>Xin chào&nbsp;bạn</p></div></main>');

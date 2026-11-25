@@ -5,7 +5,7 @@ Decap lưu bài thành file Markdown trong `content/posts/` (commit vào `main`)
 `npm run build` để tạo trang `<slug>.html` và thêm bài vào các trang danh sách (xem bảng dưới), rồi deploy
 (khoảng 1-2 phút).
 
-Các trang cũ (`omega-3-co-tac-dung-gi.html`, ...) không bị đụng tới. Chỉ bài mới đi qua build.
+Các bài viết cũ viết tay đã được xóa; mọi bài mới đều đi qua build.
 
 ## Ba mục: Kiến thức, Chuyện đi sinh và Tin tức
 
@@ -57,7 +57,7 @@ Decap cần một "OAuth proxy" để đăng nhập GitHub (GitHub Pages không 
 
 ## Lưu ý kỹ thuật
 
-- `templates/article.html` được tạo từ trang `omega-3-co-tac-dung-gi.html`. Nếu sửa header/footer của site,
+- `templates/article.html` là mẫu trang bài viết (được tạo từ một trang bài cũ). Nếu sửa header/footer/menu của site,
   hãy sửa cả template này để bài mới đồng bộ.
 - Trang sinh ra không được commit; chỉ tồn tại trong artifact deploy. Chạy `npm run build` ở máy sẽ
   tạo file `*.html` và sửa `kien-thuc.html`; đừng commit các thay đổi đó.
