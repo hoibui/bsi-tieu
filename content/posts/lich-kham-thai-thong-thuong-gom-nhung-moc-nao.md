@@ -49,4 +49,4 @@ Bên cạnh đó, những bất thường liên quan đến sự phát triển c
 
 Chủ động thăm khám đúng lịch và trao đổi thường xuyên với bác sĩ sẽ giúp mẹ theo dõi tốt sức khỏe của mình và sự phát triển của bé yêu trong suốt thai kỳ.
 
-**Bác sĩ Tiều các mẹ có một thai kỳ khỏe mạnh và hành trình đón con yêu thật bình an! ❤️**
+**Bác sĩ Tiều chúc các mẹ có một thai kỳ khỏe mạnh và hành trình đón con yêu thật bình an! ❤️**
